@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+/* Phase 0 wires the typeface only. The full token set — colour, radius, the
+   fluid type scale, easings and durations — is Phase 1's job and belongs in an
+   `@theme` block here. Do not scatter tokens elsewhere. */
+@theme inline {
+  --font-sans: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
+}
