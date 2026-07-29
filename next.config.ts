@@ -7,6 +7,12 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(import.meta.dirname),
   },
+  images: {
+    // Next 16 requires an allowlist; anything not listed falls back to 75
+    // without warning. 85 is the quality the hero and the card thumbnails ask
+    // for. Revisit the trade-off in Phase 8.
+    qualities: [85],
+  },
 };
 
 export default nextConfig;

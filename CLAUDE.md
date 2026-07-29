@@ -67,9 +67,10 @@ single-storey geometric; General Sans, Switzer and Outfit are double-storey and
 were rejected on that measurement. Display and body are the same face in the
 mockup, so they are here too.
 
-`display-xl` (h1) is `clamp(2.5rem, 4.9vw, 5rem)` / 1.25 / weight 300 — the
-measured ratio, not the 88px the brief assumed, and tracking is normal, not
-tight. Body and label are 18px, caption 14px. Full scale on `/styleguide`.
+`display-xl` (h1) is `clamp(2.125rem, 4.9vw, 5rem)` / 1.25 / 300 / tracking
+`0.034em`. 4.9vw is measured (70.6px at 1440, cap height within 1.4%); the
+tracking offsets Jost setting 7.2% narrower than the mockup's face. Body and
+label 18px, caption 14px. Full scale on `/styleguide`.
 
 Spacing base 4, plus `--spacing-plate` (side margin, `min(5.83vw, 84px)`),
 `--spacing-gutter` (plate edge to content, ~44px at 1440) and
@@ -82,19 +83,18 @@ Easings `--ease-out-expo|out-quart|in-out-quint`; durations `--dur-fast` 200 /
 ## Layout signature
 
 Every section is a **square-cornered plate on the pale canvas**, built with
-`<SectionShell>`, which owns the margin and the radius. That stack of
-hard-edged plates is the site's identity — it belongs on every section, not
-just the hero.
+`<SectionShell>`, which owns the margin and the radius. That stack of hard-edged
+plates is the site's identity — it belongs on every section, not just the hero.
 
 ## Design system
 
 Tokens live in `app/globals.css` and nowhere else. Primitives are in
 `components/ui/` — Button, ButtonLink, Pill, Badge, Card, SectionShell,
-Eyebrow, ArrowButton, IconGrip — and every one is demonstrated at
+Eyebrow, ArrowButton, IconGrip — all demonstrated at
 [`/styleguide`](app/styleguide/page.tsx), which reads values back out of the
 live cascade and re-runs the contrast audit on every load. Check it after any
-token change. Interactive states are paired with a `data-force` variant so the
-styleguide documents them without restating the styling.
+token change. Interactive states pair with a `data-force` variant so the page
+documents them without restating the styling.
 
 ## Commands
 
@@ -108,7 +108,7 @@ the relevant guide in `node_modules/next/dist/docs/` — see `AGENTS.md`.
 
 - [x] **0** — Scoping & foundations
 - [x] **1** — Design system & UI primitives (`/styleguide`)
-- [ ] **2** — Pixel-perfect hero, static
+- [x] **2** — Pixel-perfect hero, static
 - [ ] **3** — Content & sections, static
 - [ ] **4** — GSAP engine, Lenis, score rail
 - [ ] **5** — Signature scroll animations

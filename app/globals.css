@@ -65,14 +65,29 @@
   --spacing-gutter: clamp(1.25rem, 3.06vw, 2.75rem);
   --spacing-control: 2.5rem;
 
+  /* The floating nav is viewport-fixed but has to land exactly where the mockup
+     puts it inside the plate: 34px in and 27px down from the plate's corner at
+     export scale, so 44 and 36 at design scale. */
+  --spacing-nav-x: calc(var(--spacing-plate) + var(--spacing-gutter));
+  --spacing-nav-y: calc(var(--spacing-gutter) + 2.25rem);
+
   /* --- type -------------------------------------------------------------- */
   /* h1 measures cap 37 / x-height 26 / baseline-to-baseline 66 in a 1080 px
      export of a 1440 px viewport, i.e. ~72px at 1440 and a 1.25 ratio.
      Average advance measured 0.47em — the display tracking is normal, not
      tight as the brief assumed. */
-  --text-display-xl: clamp(2.5rem, 4.9vw, 5rem);
+  /* The 4.9vw term is measured: 70.6px at 1440, matching the mockup's cap
+     height to 1.4%. The 2.125rem floor is not — it is the largest size at
+     which "Every Champion Starts Somewhere" still holds two lines inside a
+     375px viewport, which the brief requires. Raising it to 2.5rem breaks the
+     title onto three lines on any phone narrower than about 425px. */
+  --text-display-xl: clamp(2.125rem, 4.9vw, 5rem);
   --text-display-xl--line-height: 1.25;
-  --text-display-xl--letter-spacing: 0em;
+  /* Measured in Phase 2: at a matched cap height (50 vs 49.3) Jost sets
+     "Every Champion Starts" 7.2% narrower than the mockup's face. The advance
+     is the design information, so the shortfall is spread across the line
+     rather than corrected by enlarging the type. */
+  --text-display-xl--letter-spacing: 0.034em;
   --text-display-xl--font-weight: 300;
 
   --text-display-lg: clamp(2rem, 3.4vw, 3.5rem);
@@ -135,9 +150,47 @@
   outline-offset: 2px;
 }
 
+/* ---------------------------------------------------------------------------
+   Hero scrim. The mockup darkens the lower left so the white title holds: the
+   luminance grid reads 20 at the left of the title band against 47 at the
+   right. Two stacked gradients rather than one diagonal, so the bottom edge
+   darkens evenly and the left edge adds on top of it.
+--------------------------------------------------------------------------- */
+@utility hero-scrim {
+  background-image:
+    linear-gradient(
+      to top,
+      color-mix(in oklab, var(--color-court-950) 72%, transparent) 0%,
+      color-mix(in oklab, var(--color-court-950) 28%, transparent) 34%,
+      transparent 62%
+    ),
+    linear-gradient(
+      to right,
+      color-mix(in oklab, var(--color-court-950) 48%, transparent) 0%,
+      transparent 58%
+    );
+}
+
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
+  }
+
+  /* Hero plate height. On phones and tablets the plate fills the viewport less
+     its frame, which is what keeps it inside 100dvh. From 1280 up it is also
+     capped by the mockup's own proportion (954 / 679 = 1.405), so a short wide
+     window cannot stretch it into a letterbox. */
+  :root {
+    --hero-plate-h: calc(100dvh - var(--spacing-gutter) * 2);
+  }
+
+  @media (min-width: 80rem) {
+    :root {
+      --hero-plate-h: min(
+        calc(100dvh - var(--spacing-gutter) * 2),
+        calc((100vw - var(--spacing-plate) * 2) / 1.405)
+      );
+    }
   }
 
   body {

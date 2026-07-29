@@ -130,7 +130,7 @@ export const typeScale: readonly TypeToken[] = [
     cssVar: "--text-display-xl",
     utility: "display-xl",
     sample: "Every Champion Starts Somewhere",
-    note: "h1. clamp(2.5rem, 4.9vw, 5rem) / 1.25 / weight 300.",
+    note: "h1. clamp(2.125rem, 4.9vw, 5rem) / 1.25 / weight 300, tracking 0.034em.",
   },
   {
     cssVar: "--text-display-lg",
