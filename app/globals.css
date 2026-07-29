@@ -1,8 +1,164 @@
 @import "tailwindcss";
 
-/* Phase 0 wires the typeface only. The full token set — colour, radius, the
-   fluid type scale, easings and durations — is Phase 1's job and belongs in an
-   `@theme` block here. Do not scatter tokens elsewhere. */
+/* next/font injects `--font-jost` on <html>. `inline` stops the generated
+   utilities from indirecting through a second variable. */
 @theme inline {
   --font-sans: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ---------------------------------------------------------------------------
+   Design tokens — every value here is measured from docs/design/hero-mockup.jpeg.
+   Method and evidence: docs/design/DESIGN-ANALYSIS.md.
+   Components must never hard-code a colour, radius, size or duration.
+--------------------------------------------------------------------------- */
+@theme {
+  /* --- colour ------------------------------------------------------------ */
+  --color-canvas: #f1f5ff;
+  --color-ink: #0e1116;
+  --color-surface: #ffffff;
+
+  /* The sampled CTA green is #84CC16 and the sampled badge is #EBFACC — those
+     are Tailwind's lime-500 and lime-100 to within JPEG noise, so the mockup
+     was built on that ramp. We adopt the whole ramp rather than invent one. */
+  --color-lime-50: #f7fee7;
+  --color-lime-100: #ecfccb;
+  --color-lime-200: #d9f99d;
+  --color-lime-300: #bef264;
+  --color-lime-400: #a3e635;
+  --color-lime-500: #84cc16;
+  --color-lime-600: #65a30d;
+  --color-lime-700: #4d7c0f;
+  --color-lime-800: #3f6212;
+  --color-lime-900: #365314;
+  --color-lime: var(--color-lime-500);
+  --color-lime-soft: var(--color-lime-100);
+
+  /* Court blue. 700 and 800 are the two sampled anchors; the rest is a
+     constant-hue ramp built around them (H 198-201). */
+  --color-court-50: #eaf6fb;
+  --color-court-100: #cfeaf6;
+  --color-court-200: #a2d8ef;
+  --color-court-300: #6bc2e6;
+  --color-court-400: #2aa6da;
+  --color-court-500: #0f87bd;
+  --color-court-600: #066993;
+  --color-court-700: #014c6c;
+  --color-court-800: #023958;
+  --color-court-900: #01283c;
+  --color-court-950: #011b28;
+  --color-court: var(--color-court-700);
+  --color-court-deep: var(--color-court-800);
+
+  /* --- shape ------------------------------------------------------------- */
+  /* The mockup contains no pills and no large radii. The hero plate's corners
+     are square (inset 0 across 34 measured rows) — that is the signature. */
+  --radius-plate: 0px;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  /* --- spacing ----------------------------------------------------------- */
+  /* Base 4 (Tailwind's default --spacing) plus three layout constants. */
+  --spacing-plate: min(5.83vw, 84px);
+  --spacing-gutter: clamp(1.25rem, 3.06vw, 2.75rem);
+  --spacing-control: 2.5rem;
+
+  /* --- type -------------------------------------------------------------- */
+  /* h1 measures cap 37 / x-height 26 / baseline-to-baseline 66 in a 1080 px
+     export of a 1440 px viewport, i.e. ~72px at 1440 and a 1.25 ratio.
+     Average advance measured 0.47em — the display tracking is normal, not
+     tight as the brief assumed. */
+  --text-display-xl: clamp(2.5rem, 4.9vw, 5rem);
+  --text-display-xl--line-height: 1.25;
+  --text-display-xl--letter-spacing: 0em;
+  --text-display-xl--font-weight: 300;
+
+  --text-display-lg: clamp(2rem, 3.4vw, 3.5rem);
+  --text-display-lg--line-height: 1.2;
+  --text-display-lg--letter-spacing: 0em;
+  --text-display-lg--font-weight: 300;
+
+  --text-display-md: clamp(1.5rem, 2.2vw, 2.25rem);
+  --text-display-md--line-height: 1.25;
+  --text-display-md--letter-spacing: 0em;
+  --text-display-md--font-weight: 400;
+
+  --text-body-lg: clamp(1.125rem, 1.4vw, 1.375rem);
+  --text-body-lg--line-height: 1.5;
+
+  --text-body: 1.125rem;
+  --text-body--line-height: 1.55;
+
+  --text-label: 1.125rem;
+  --text-label--line-height: 1;
+  --text-label--letter-spacing: 0.01em;
+
+  --text-caption: 0.875rem;
+  --text-caption--line-height: 1.4;
+  --text-caption--letter-spacing: 0.02em;
+
+  --leading-display: 1.25;
+  --leading-tight: 1.2;
+  --leading-snug: 1.35;
+  --leading-body: 1.55;
+
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.04em;
+  --tracking-wider: 0.08em;
+
+  /* --- motion ------------------------------------------------------------ */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+
+  --dur-fast: 200ms;
+  --dur-base: 400ms;
+  --dur-slow: 800ms;
+  --dur-hero: 1400ms;
+}
+
+/* ---------------------------------------------------------------------------
+   Focus. One decision, made once, so no primitive has to re-litigate it.
+   Lime on canvas is 1.9:1 and fails WCAG 2.2's 3:1 for focus indicators, so
+   the ring is ink on light surfaces and surface-white on dark ones.
+--------------------------------------------------------------------------- */
+@utility focus-ring {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+@utility focus-ring-invert {
+  outline: 2px solid var(--color-surface);
+  outline-offset: 2px;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Rule 4 in CLAUDE.md: reduced motion lands elements in their final state,
+     it never hides them. Phase 4 and 5 opt back in per-animation. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }

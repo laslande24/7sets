@@ -23,6 +23,9 @@ scoreboard — `SET 03 / 07`, with an inner counter stepping
    own primitives.
 7. **No hard-coded colours, sizes or radii in components.** Tokens only.
 8. **No `any`, no `@ts-ignore`.**
+9. **A new `--text-*` token must also be registered in `lib/cn.ts`.**
+   tailwind-merge only knows Tailwind's stock scales; an unrecognised `text-*`
+   lands in its _colour_ group and silently cancels a real colour class.
 
 ## Design tokens
 
@@ -43,17 +46,19 @@ measurements: `docs/design/DESIGN-ANALYSIS.md`.
 
 ### Shape — this mockup has no pills and no large radii
 
-| Token         | Value | Used by                                     |
-| ------------- | ----- | ------------------------------------------- |
-| `--radius-sm` | `4px` | nav blocks, buttons, badges, arrow chips    |
-| `--radius-md` | `8px` | inner cards, image thumbnails               |
-| `--radius-lg` | `0`   | **section shells — the corners are square** |
+| Token            | Value    | Used by                                     |
+| ---------------- | -------- | ------------------------------------------- |
+| `--radius-plate` | `0`      | **section shells — the corners are square** |
+| `--radius-xs`    | `2px`    | the CTA arrow chip                          |
+| `--radius-sm`    | `4px`    | nav blocks, buttons, badges                 |
+| `--radius-md`    | `8px`    | thumbnails, inner cards                     |
+| `--radius-lg`    | `12px`   | glass panels                                |
+| `--radius-full`  | `9999px` | circular markers only — never a button      |
 
-Measured facts that contradict the original brief, and that the build must
-follow: the hero plate has **square corners** (inset 0 across 34 rows); the nav
-is **three separate blocks** (83 / 342 / 29 px with 6 px gaps), not one pill;
-the secondary CTA is **solid white**, not a transparent outline; the CTA arrow
-sits in a **rounded square** chip, not a circle.
+Measured facts that contradict the brief, and that the build follows: the hero
+plate has **square corners**; the nav is **three separate blocks** with 8px
+gaps, not one pill; the secondary CTA is **solid white**, not a transparent
+outline; the CTA arrow sits in a **rounded square** chip, not a circle.
 
 ### Type — one family, not a pairing
 
@@ -62,31 +67,39 @@ single-storey geometric; General Sans, Switzer and Outfit are double-storey and
 were rejected on that measurement. Display and body are the same face in the
 mockup, so they are here too.
 
-| Role              | Size                         | Line-height |
-| ----------------- | ---------------------------- | ----------- |
-| `display-xl` (h1) | `clamp(2.5rem, 4.9vw, 5rem)` | 1.25        |
-| body              | 18px                         | 1.55        |
-| label / nav       | 18px, uppercase              | —           |
+`display-xl` (h1) is `clamp(2.5rem, 4.9vw, 5rem)` / 1.25 / weight 300 — the
+measured ratio, not the 88px the brief assumed, and tracking is normal, not
+tight. Body and label are 18px, caption 14px. Full scale on `/styleguide`.
 
-Spacing base 4. Plate side margin `5.83vw` (cap 84px). Content gutter 44px.
-Nav and button height 40px.
+Spacing base 4, plus `--spacing-plate` (side margin, `min(5.83vw, 84px)`),
+`--spacing-gutter` (plate edge to content, ~44px at 1440) and
+`--spacing-control` (40px — nav block, button, grip).
+
+Easings `--ease-out-expo|out-quart|in-out-quint`; durations `--dur-fast` 200 /
+`--dur-base` 400 / `--dur-slow` 800 / `--dur-hero` 1400ms. Nothing may exceed
+`--dur-hero`.
 
 ## Layout signature
 
-Every section is a **square-cornered plate on the pale canvas**. That stack of
+Every section is a **square-cornered plate on the pale canvas**, built with
+`<SectionShell>`, which owns the margin and the radius. That stack of
 hard-edged plates is the site's identity — it belongs on every section, not
 just the hero.
 
+## Design system
+
+Tokens live in `app/globals.css` and nowhere else. Primitives are in
+`components/ui/` — Button, ButtonLink, Pill, Badge, Card, SectionShell,
+Eyebrow, ArrowButton, IconGrip — and every one is demonstrated at
+[`/styleguide`](app/styleguide/page.tsx), which reads values back out of the
+live cascade and re-runs the contrast audit on every load. Check it after any
+token change. Interactive states are paired with a `data-force` variant so the
+styleguide documents them without restating the styling.
+
 ## Commands
 
-|                     |                               |
-| ------------------- | ----------------------------- |
-| `npm run dev`       | dev server (Turbopack)        |
-| `npm run build`     | production build              |
-| `npm run lint`      | ESLint                        |
-| `npm run typecheck` | `tsc --noEmit`, strict        |
-| `npm run format`    | Prettier, write               |
-| `npm test`          | Playwright — lands in Phase 6 |
+`npm run dev` (Turbopack) · `build` · `lint` · `typecheck` (strict) ·
+`format` (Prettier). `npm test` is Playwright and lands in Phase 6.
 
 Next.js 16 has breaking changes versus 15. Before writing framework code, read
 the relevant guide in `node_modules/next/dist/docs/` — see `AGENTS.md`.
@@ -94,7 +107,7 @@ the relevant guide in `node_modules/next/dist/docs/` — see `AGENTS.md`.
 ## Phases
 
 - [x] **0** — Scoping & foundations
-- [ ] **1** — Design system & UI primitives (`/styleguide`)
+- [x] **1** — Design system & UI primitives (`/styleguide`)
 - [ ] **2** — Pixel-perfect hero, static
 - [ ] **3** — Content & sections, static
 - [ ] **4** — GSAP engine, Lenis, score rail
