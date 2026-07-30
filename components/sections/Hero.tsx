@@ -25,6 +25,7 @@ export function Hero() {
       id="hero"
       tone="bare"
       padded={false}
+      data-animate="expand"
       className="h-(--hero-plate-h) bg-court-900"
     >
       {/* `sizes` describes the plate, which is the viewport less its side

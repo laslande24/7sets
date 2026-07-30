@@ -98,6 +98,53 @@ export function SectionMotion() {
         });
       }
 
+      /* -------------------------------------------------- hero expand */
+      // The hero sits inset from the page edges like every other plate. As you
+      // scroll away from it, it grows until it is exactly full-bleed, then the
+      // next plate paints over it and takes the page. Uniform scale, so the
+      // photograph is never stretched.
+      //
+      // The target is computed rather than fixed: the side margin is
+      // `min(5.83vw, 84px)`, so the ratio is a constant 1.132 until the 84px cap
+      // takes over past 1440, after which it falls away. `invalidateOnRefresh`
+      // recomputes it whenever the layout is remeasured.
+      const heroPlate = document.querySelector<HTMLElement>('[data-animate="expand"]');
+      if (heroPlate) {
+        const tween = gsap.fromTo(
+          heroPlate,
+          { scale: 1 },
+          {
+            // offsetWidth is the untransformed layout width, so this stays
+            // correct even when re-read mid-tween. The target is
+            // documentElement.clientWidth, not window.innerWidth — innerWidth
+            // includes the scrollbar, which would push the plate a few pixels
+            // under it and give the document a horizontal scroll.
+            scale: () =>
+              heroPlate.offsetWidth
+                ? document.documentElement.clientWidth / heroPlate.offsetWidth
+                : 1,
+            ease: "none",
+            transformOrigin: "50% 50%",
+            scrollTrigger: {
+              trigger: heroPlate,
+              start: "top top",
+              end: "bottom top",
+              scrub: true,
+              invalidateOnRefresh: true,
+              onEnter: () => (heroPlate.style.willChange = "transform"),
+              onEnterBack: () => (heroPlate.style.willChange = "transform"),
+              onLeave: () => (heroPlate.style.willChange = ""),
+              onLeaveBack: () => (heroPlate.style.willChange = ""),
+            },
+          },
+        );
+        cleanups.push(() => {
+          tween.scrollTrigger?.kill();
+          tween.kill();
+          heroPlate.style.willChange = "";
+        });
+      }
+
       /* ------------------------------------------------------ parallax */
       for (const layer of gsap.utils.toArray<HTMLElement>('[data-animate="parallax"]')) {
         const speed = Number(layer.dataset.parallaxSpeed ?? 0.12);

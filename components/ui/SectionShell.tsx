@@ -28,6 +28,12 @@ export type SectionShellProps = ComponentProps<"section"> & {
   tone?: SectionTone;
   /** Applies the measured content gutter and a vertical rhythm. Off for the hero, which places its own content. */
   padded?: boolean;
+  /**
+   * Motion the plate itself opts into, read by `components/motion/SectionMotion.tsx`.
+   * Declared here because a hyphenated prop on a custom component is not exempt
+   * from type checking the way it is on an intrinsic element.
+   */
+  "data-animate"?: "expand";
 };
 
 export function SectionShell({
