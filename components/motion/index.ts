@@ -9,6 +9,7 @@ export type { ParallaxProps } from "./Parallax";
 
 export { Reveal } from "./Reveal";
 export { SectionMotion } from "./SectionMotion";
+export { SignatureMotion } from "./SignatureMotion";
 export type { RevealProps, RevealTag } from "./Reveal";
 
 export { SmoothScrollProvider } from "./SmoothScrollProvider";

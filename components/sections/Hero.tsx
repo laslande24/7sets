@@ -38,6 +38,7 @@ export function Hero() {
         quality={85}
         placeholder="blur"
         sizes="(min-width: 1440px) calc(100vw - 168px), 88vw"
+        data-hero-media
         className="object-cover object-[62%_38%]"
       />
 
@@ -51,23 +52,26 @@ export function Hero() {
             with the viewport. Deliberately not text-balance: balancing splits
             it "Every Champion / Starts Somewhere", which is not the break the
             mockup uses. */}
-        <h1 className="max-w-[11em] text-display-xl text-surface">
+        <h1 data-hero-title className="max-w-[11em] text-display-xl text-surface">
           Every Champion Starts Somewhere
         </h1>
 
-        <p className="mt-7 max-w-[31rem] text-body text-surface/90">
+        <p data-hero-copy className="mt-7 max-w-[31rem] text-body text-surface/90">
           Build confidence, master every shot, and fall in love with the game. Expert
           coaching for kids, teens, and adults from first swing to tournament play.
         </p>
 
-        <div className="mt-5 flex flex-wrap items-center gap-2.5">
+        <div data-hero-copy className="mt-5 flex flex-wrap items-center gap-2.5">
           <Button>Book free trial</Button>
           <ButtonLink href="#programs" variant="secondary">
             Explore programs
           </ButtonLink>
         </div>
 
-        <SummerCampCard className="mt-8 xl:absolute xl:top-30 xl:right-16 xl:mt-0" />
+        <SummerCampCard
+          data-hero-card
+          className="mt-8 xl:absolute xl:top-30 xl:right-16 xl:mt-0"
+        />
       </div>
     </SectionShell>
   );

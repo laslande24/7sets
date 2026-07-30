@@ -122,8 +122,8 @@ the relevant guide in `node_modules/next/dist/docs/` — see `AGENTS.md`.
 ## Phases
 
 Done — **0** scoping · **1** design system · **2** hero · **3** content ·
-**4** GSAP engine, Lenis, score rail.
-Next — **5** signature animations · **6** micro-interactions, form, a11y ·
-**7** SEO & structured data · **8** Core Web Vitals · **9** QA & release.
+**4** GSAP engine, Lenis, score rail · **5** signature animations (`docs/MOTION.md`).
+Next — **6** micro-interactions, form, a11y · **7** SEO & structured data ·
+**8** Core Web Vitals · **9** QA & release.
 
 One phase = one session = one commit. `/clear` between phases.

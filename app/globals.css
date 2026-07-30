@@ -204,6 +204,34 @@
   }
 }
 
+/* ---------------------------------------------------------------------------
+   Nav contraction, Phase 5.
+
+   Scale rather than padding, so the blocks shrink without reflowing anything,
+   and a heavier blur behind them once they are over content rather than over
+   the hero. `backdrop-filter` is affordable here precisely because the nav is
+   fixed — it is the one place it does not repaint on scroll.
+--------------------------------------------------------------------------- */
+header nav {
+  transform-origin: left center;
+  transition: transform var(--dur-base) var(--ease-out-quart);
+}
+
+header nav > * {
+  transition:
+    background-color var(--dur-base) var(--ease-out-quart),
+    backdrop-filter var(--dur-base) var(--ease-out-quart);
+}
+
+header nav.is-condensed {
+  transform: scale(0.94);
+}
+
+header nav.is-condensed > * {
+  background-color: color-mix(in oklab, var(--color-surface) 84%, transparent);
+  backdrop-filter: blur(14px);
+}
+
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;

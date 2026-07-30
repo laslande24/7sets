@@ -43,14 +43,19 @@ export function Coaches() {
             <div className="relative overflow-hidden rounded-md bg-court">
               <div
                 aria-hidden="true"
-                className="grid aspect-[4/5] place-items-center bg-linear-to-br from-court-600 to-court-900"
+                className="grid aspect-[4/5] place-items-center bg-linear-to-br from-court-600 to-court-900 transition-transform duration-(--dur-slow) ease-out-quart group-hover:scale-[1.04]"
               >
                 <span className="text-display-xl text-surface/25">{coach.initials}</span>
               </div>
 
-              {/* Phase 5 raises this from the bottom edge on hover. Static for now,
-                  and always present so the record is never keyboard-inaccessible. */}
+              {/* A lime edge draws in on hover or focus. The record itself is
+                  always present and always readable — revealing it on hover
+                  alone would put it out of reach of a keyboard. */}
               <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-court-950/90 to-transparent p-4 pt-10">
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-lime transition-transform duration-(--dur-base) ease-out-quart group-focus-within:scale-x-100 group-hover:scale-x-100"
+                />
                 <p className="text-caption text-surface/85">{coach.record}</p>
               </div>
             </div>

@@ -28,15 +28,21 @@ export function Programs() {
       </div>
 
       <div data-programs-viewport className="mt-12">
+        {/* Native snap scroller below 1024, which is also the reduced-motion and
+            no-JavaScript fallback. From 1024 up the overflow is released so the
+            pinned tween can translate the track instead. */}
         <ul
           data-programs-track
-          className="flex snap-x snap-mandatory [scrollbar-width:thin] gap-4 overflow-x-auto px-gutter pb-4"
+          className="flex snap-x snap-mandatory [scrollbar-width:thin] gap-4 overflow-x-auto px-gutter pb-4 lg:w-max lg:overflow-x-visible"
         >
           {programs.map((program) => (
             <li
               key={program.id}
               data-animate="rise"
-              className="flex w-[min(20rem,80vw)] shrink-0 snap-start flex-col rounded-md bg-canvas p-6 ring-1 ring-ink/10 ring-inset"
+              /* Wider from 1024 so the pinned rail has a journey worth pinning
+                 for: at 20rem the five cards overhang the viewport by barely
+                 400px, which is a lot of held scroll for very little travel. */
+              className="flex w-[min(20rem,80vw)] shrink-0 snap-start flex-col rounded-md bg-canvas p-6 ring-1 ring-ink/10 ring-inset lg:w-96"
             >
               <div className="flex items-baseline justify-between gap-3">
                 <h3 className="text-display-md">{program.name}</h3>

@@ -26,6 +26,15 @@ export function MatchPoint() {
         {matchPoint.body}
       </p>
 
+      {/* The ball Phase 5 sends across the plate. Decorative and off-screen at
+          rest, so it costs nothing when the animation does not run. */}
+      <span
+        aria-hidden="true"
+        data-matchpoint-ball
+        className="pointer-events-none absolute bottom-24 left-0 hidden size-6 rounded-full bg-lime shadow-[0_0_24px_rgba(132,204,22,0.45)] lg:block"
+        style={{ opacity: 0 }}
+      />
+
       <div data-animate="rise" className="mt-10 flex flex-wrap items-center gap-2.5">
         <Button size="lg">{matchPoint.cta.label}</Button>
         <ButtonLink href={matchPoint.secondary.href} variant="secondary" size="lg">
