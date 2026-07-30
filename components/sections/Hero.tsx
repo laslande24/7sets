@@ -25,7 +25,7 @@ export function Hero() {
       id="hero"
       tone="bare"
       padded={false}
-      className="mt-gutter h-(--hero-plate-h) bg-court-900"
+      className="h-(--hero-plate-h) bg-court-900"
     >
       {/* `sizes` describes the plate, which is the viewport less its side
           margins — not the full width. */}

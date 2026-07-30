@@ -1,4 +1,5 @@
 import { IconGrip, Pill } from "@/components/ui";
+import { navLinks, site } from "@/content/site";
 import { SevenSetsMark } from "./SevenSetsMark";
 
 /**
@@ -14,24 +15,17 @@ import { SevenSetsMark } from "./SevenSetsMark";
  * Phase 5; the full-screen mobile menu is Phase 6.
  */
 
-const LINKS = [
-  { label: "Home", href: "#hero" },
-  { label: "About", href: "#about" },
-  { label: "Programs", href: "#programs" },
-  { label: "Contact", href: "#contact" },
-];
-
 export function FloatingNav() {
   return (
     <header className="fixed top-nav-y left-nav-x z-50">
       <nav aria-label="Main" className="flex items-center gap-2">
         <Pill className="gap-2 pr-4 pl-3">
           <SevenSetsMark className="size-6" />
-          <span className="text-label tracking-wide">7SETS</span>
+          <span className="text-label tracking-wide">{site.name}</span>
         </Pill>
 
         <Pill className="hidden gap-8 md:inline-flex">
-          {LINKS.map((link) => (
+          {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}

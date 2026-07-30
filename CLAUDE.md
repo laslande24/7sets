@@ -23,9 +23,8 @@ scoreboard — `SET 03 / 07`, with an inner counter stepping
    own primitives.
 7. **No hard-coded colours, sizes or radii in components.** Tokens only.
 8. **No `any`, no `@ts-ignore`.**
-9. **A new `--text-*` token must also be registered in `lib/cn.ts`.**
-   tailwind-merge only knows Tailwind's stock scales; an unrecognised `text-*`
-   lands in its _colour_ group and silently cancels a real colour class.
+9. **A new `--text-*` token must also be registered in `lib/cn.ts`** —
+   tailwind-merge files an unknown `text-*` as a colour and cancels real ones.
 
 ## Design tokens
 
@@ -55,22 +54,18 @@ measurements: `docs/design/DESIGN-ANALYSIS.md`.
 | `--radius-lg`    | `12px`   | glass panels                                |
 | `--radius-full`  | `9999px` | circular markers only — never a button      |
 
-Measured facts that contradict the brief, and that the build follows: the hero
-plate has **square corners**; the nav is **three separate blocks** with 8px
-gaps, not one pill; the secondary CTA is **solid white**, not a transparent
-outline; the CTA arrow sits in a **rounded square** chip, not a circle.
+Measured facts that contradict the brief: the hero plate has **square corners**;
+the nav is **three blocks** with 8px gaps, not one pill; the secondary CTA is
+**solid white**; the CTA arrow sits in a **rounded square**, not a circle.
 
 ### Type — one family, not a pairing
 
-`Jost` (variable, self-hosted via `next/font`). The mockup's `a` is
-single-storey geometric; General Sans, Switzer and Outfit are double-storey and
-were rejected on that measurement. Display and body are the same face in the
-mockup, so they are here too.
+`Jost` (variable, `next/font`). The mockup's `a` is single-storey geometric,
+which ruled out General Sans, Switzer and Outfit. One face for display and body.
 
-`display-xl` (h1) is `clamp(2.125rem, 4.9vw, 5rem)` / 1.25 / 300 / tracking
-`0.034em`. 4.9vw is measured (70.6px at 1440, cap height within 1.4%); the
-tracking offsets Jost setting 7.2% narrower than the mockup's face. Body and
-label 18px, caption 14px. Full scale on `/styleguide`.
+`display-xl` (h1) `clamp(2.125rem, 4.9vw, 5rem)` / 1.25 / 300 / tracking
+`0.034em` — the tracking offsets Jost setting 7.2% narrower than the mockup's
+face. Body and label 18px, caption 14px. Full scale on `/styleguide`.
 
 Spacing base 4, plus `--spacing-plate` (side margin, `min(5.83vw, 84px)`),
 `--spacing-gutter` (plate edge to content, ~44px at 1440) and
@@ -83,18 +78,24 @@ Easings `--ease-out-expo|out-quart|in-out-quint`; durations `--dur-fast` 200 /
 ## Layout signature
 
 Every section is a **square-cornered plate on the pale canvas**, built with
-`<SectionShell>`, which owns the margin and the radius. That stack of hard-edged
-plates is the site's identity — it belongs on every section, not just the hero.
+`<SectionShell>`, which owns the margin and the radius. That stack is the site's
+identity — it belongs on every section, not just the hero.
 
 ## Design system
 
-Tokens live in `app/globals.css` and nowhere else. Primitives are in
-`components/ui/` — Button, ButtonLink, Pill, Badge, Card, SectionShell,
-Eyebrow, ArrowButton, IconGrip — all demonstrated at
-[`/styleguide`](app/styleguide/page.tsx), which reads values back out of the
-live cascade and re-runs the contrast audit on every load. Check it after any
-token change. Interactive states pair with a `data-force` variant so the page
-documents them without restating the styling.
+Tokens live in `app/globals.css` and nowhere else. The nine primitives in
+`components/ui/` are all demonstrated at
+[`/styleguide`](app/styleguide/page.tsx), which reads values back out of the live
+cascade and re-runs the contrast audit on load — check it after any token
+change. Interactive states pair with a `data-force` variant.
+
+## Content
+
+All user-visible strings live in `content/*.ts`, never inline in JSX. `site.ts`
+holds the NAP Phase 7's `LocalBusiness` must mirror exactly; `faq.ts` is the only
+source for `FAQPage`. **7SETS is fictional** — address, phone (an Ofcom drama
+range), prices and coach records are invented but internally consistent, and the
+coaches render as monograms on purpose. See `docs/ASSETS.md`.
 
 ## Commands
 
@@ -109,7 +110,7 @@ the relevant guide in `node_modules/next/dist/docs/` — see `AGENTS.md`.
 - [x] **0** — Scoping & foundations
 - [x] **1** — Design system & UI primitives (`/styleguide`)
 - [x] **2** — Pixel-perfect hero, static
-- [ ] **3** — Content & sections, static
+- [x] **3** — Content & sections, static
 - [ ] **4** — GSAP engine, Lenis, score rail
 - [ ] **5** — Signature scroll animations
 - [ ] **6** — Micro-interactions, booking form, a11y
