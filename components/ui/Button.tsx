@@ -32,7 +32,7 @@ type ButtonShape = ForceState & {
 };
 
 const base = cn(
-  "inline-flex select-none items-center justify-center whitespace-nowrap uppercase",
+  "group inline-flex select-none items-center justify-center whitespace-nowrap uppercase",
   "rounded-sm font-normal transition-colors duration-(--dur-fast) ease-out-quart",
   "focus-visible:focus-ring data-[force=focus]:focus-ring",
   "disabled:cursor-not-allowed disabled:opacity-50",
@@ -108,7 +108,14 @@ function ArrowChip({ size }: { size: ButtonSize }) {
         chipSizes[size],
       )}
     >
-      <svg viewBox="0 0 12 12" fill="none" className="size-3">
+      {/* The arrow slides the way it points, and comes back elastic. Motion on
+          the glyph, not the chip, so the button's own box never moves and the
+          click target stays exactly where the cursor aimed. */}
+      <svg
+        viewBox="0 0 12 12"
+        fill="none"
+        className="size-3 transition-transform duration-(--dur-base) ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:translate-x-px group-hover:-translate-y-px motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0"
+      >
         <path
           d="M3.25 8.75 8.75 3.25M8.75 3.25H4.5M8.75 3.25V7.5"
           stroke="currentColor"

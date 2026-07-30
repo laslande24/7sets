@@ -1,5 +1,6 @@
-import { IconGrip, Pill } from "@/components/ui";
+import { Pill } from "@/components/ui";
 import { navLinks, site } from "@/content/site";
+import { NavMenu } from "./NavMenu";
 import { SevenSetsMark } from "./SevenSetsMark";
 
 /**
@@ -32,18 +33,27 @@ export function FloatingNav() {
               /* self-stretch makes each link fill the 40px block rather than
                  sit at its 18px text height, which is what WCAG 2.2 SC 2.5.8
                  needs (24px minimum). It changes the hit area, not the look. */
-              className="flex items-center gap-2 self-stretch rounded-xs text-label uppercase focus-visible:focus-ring"
+              /* The underline draws in from the left and retracts to the right
+                 — asymmetric on purpose, because a rule that leaves the way it
+                 arrived reads as a toggle rather than a gesture. */
+              className="group/link flex items-center gap-2 self-stretch rounded-xs text-label uppercase focus-visible:focus-ring"
             >
               <span
                 aria-hidden="true"
                 className="size-1 shrink-0 rounded-full bg-current"
               />
-              {link.label}
+              <span className="relative">
+                {link.label}
+                <span
+                  aria-hidden="true"
+                  className="absolute -bottom-0.5 left-0 h-px w-full origin-right scale-x-0 bg-current transition-transform duration-(--dur-base) ease-out-quart group-hover/link:origin-left group-hover/link:scale-x-100 group-focus-visible/link:origin-left group-focus-visible/link:scale-x-100 motion-reduce:transition-none"
+                />
+              </span>
             </a>
           ))}
         </Pill>
 
-        <IconGrip />
+        <NavMenu links={navLinks} />
       </nav>
     </header>
   );
