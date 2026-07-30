@@ -17,10 +17,14 @@ import { sectionCopy } from "@/content/copy";
 export function Coaches() {
   return (
     <SectionShell id="coaches">
-      <Eyebrow set={5}>{sectionCopy.coaches.eyebrow}</Eyebrow>
+      <div data-animate="rise">
+        <Eyebrow set={5}>{sectionCopy.coaches.eyebrow}</Eyebrow>
+      </div>
       <div className="mt-4 flex flex-wrap items-end justify-between gap-x-gutter gap-y-4">
-        <h2 className="max-w-[20ch] text-display-lg">{sectionCopy.coaches.heading}</h2>
-        <p className="max-w-[34ch] text-body text-ink/70">
+        <h2 data-animate="lines" className="max-w-[20ch] text-display-lg">
+          {sectionCopy.coaches.heading}
+        </h2>
+        <p data-animate="rise" className="max-w-[34ch] text-body text-ink/70">
           {sectionCopy.coaches.standfirst}
         </p>
       </div>
@@ -33,6 +37,7 @@ export function Coaches() {
           <li
             key={coach.id}
             data-coach-card
+            data-animate="rise"
             className="group w-[min(17rem,72vw)] shrink-0 snap-start sm:w-auto sm:shrink"
           >
             <div className="relative overflow-hidden rounded-md bg-court">

@@ -14,8 +14,10 @@ export function Voices() {
   return (
     <SectionShell id="voices" tone="canvas" padded={false} className="py-16 md:py-24">
       <div className="px-gutter">
-        <Eyebrow>{sectionCopy.voices.eyebrow}</Eyebrow>
-        <h2 className="mt-4 max-w-[20ch] text-display-lg">
+        <div data-animate="rise">
+          <Eyebrow>{sectionCopy.voices.eyebrow}</Eyebrow>
+        </div>
+        <h2 data-animate="lines" className="mt-4 max-w-[20ch] text-display-lg">
           {sectionCopy.voices.heading}
         </h2>
       </div>

@@ -99,12 +99,17 @@ coaches render as monograms on purpose. See `docs/ASSETS.md`.
 
 ## Motion
 
-Lenis + ScrollTrigger via `components/motion/SmoothScrollProvider.tsx`; plugins
-registered once in `lib/gsap/`, SplitText/DrawSVG/MotionPath lazy. Durations and
-easings are read from the CSS tokens by `lib/gsap/config.ts`, so motion cannot
-drift from design. Pre-animation states are CSS behind `[data-js]`, never a
-`gsap.set`; an inline script drops them if the runtime never arrives. The six
-primitives are in `components/motion/`, demonstrated on `/styleguide`.
+Lenis + ScrollTrigger via `SmoothScrollProvider`; plugins registered once in
+`lib/gsap/`, SplitText/DrawSVG/MotionPath lazy. Durations and easings are read
+from the CSS tokens by `lib/gsap/config.ts`, so motion cannot drift from design.
+Pre-animation states are CSS behind `[data-js]`, never a `gsap.set`; an inline
+script drops them if the runtime never arrives.
+
+Sections stay Server Components and declare motion with attributes that
+`components/motion/SectionMotion.tsx` picks up: `data-animate="rise"` (batched
+fade and rise), `"lines"` (masked SplitText), `"parallax"` (+
+`data-parallax-speed`), and `data-count-to`. The six standalone primitives in
+`components/motion/` are for one-off use, demonstrated on `/styleguide`.
 
 ## Commands
 

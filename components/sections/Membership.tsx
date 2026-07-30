@@ -27,9 +27,13 @@ export function Membership() {
 
   return (
     <SectionShell id="membership">
-      <Eyebrow set={7}>{sectionCopy.membership.eyebrow}</Eyebrow>
+      <div data-animate="rise">
+        <Eyebrow set={7}>{sectionCopy.membership.eyebrow}</Eyebrow>
+      </div>
       <div className="mt-4 flex flex-wrap items-end justify-between gap-x-gutter gap-y-6">
-        <h2 className="max-w-[16ch] text-display-lg">{sectionCopy.membership.heading}</h2>
+        <h2 data-animate="lines" className="max-w-[16ch] text-display-lg">
+          {sectionCopy.membership.heading}
+        </h2>
 
         <div>
           <div
@@ -66,6 +70,7 @@ export function Membership() {
           <li
             key={plan.id}
             data-membership-card
+            data-animate="rise"
             className={cn(
               "flex flex-col rounded-md p-8",
               plan.featured

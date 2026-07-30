@@ -21,26 +21,43 @@ const tileClasses: Record<Tile, string> = {
 export function Courts() {
   return (
     <SectionShell id="courts">
-      <Eyebrow set={6}>{sectionCopy.courts.eyebrow}</Eyebrow>
+      <div data-animate="rise">
+        <Eyebrow set={6}>{sectionCopy.courts.eyebrow}</Eyebrow>
+      </div>
       <div className="mt-4 flex flex-wrap items-end justify-between gap-x-gutter gap-y-4">
-        <h2 className="max-w-[18ch] text-display-lg">{sectionCopy.courts.heading}</h2>
-        <p className="max-w-[34ch] text-body text-ink/70">
+        <h2 data-animate="lines" className="max-w-[18ch] text-display-lg">
+          {sectionCopy.courts.heading}
+        </h2>
+        <p data-animate="rise" className="max-w-[34ch] text-body text-ink/70">
           {sectionCopy.courts.standfirst}
         </p>
       </div>
 
       <ul className="mt-12 grid grid-cols-2 gap-3 md:grid-cols-4">
         {facilities.map((facility) => (
-          <li key={facility.id} className={tileClasses[facility.tile]}>
+          <li
+            key={facility.id}
+            data-animate="rise"
+            className={tileClasses[facility.tile]}
+          >
             <figure className="relative h-full w-full overflow-hidden rounded-md bg-court-100">
-              <Image
-                src={facility.src}
-                alt={facility.alt}
-                fill
-                quality={85}
-                sizes="(min-width: 768px) 25vw, 50vw"
-                className="object-cover"
-              />
+              {/* The frame is scaled past its box so the parallax has somewhere
+                  to travel without exposing an edge. 110% of the height against
+                  a ±5% offset leaves margin on both sides. */}
+              <div
+                data-animate="parallax"
+                data-parallax-speed="0.1"
+                className="absolute inset-0 scale-110"
+              >
+                <Image
+                  src={facility.src}
+                  alt={facility.alt}
+                  fill
+                  quality={85}
+                  sizes="(min-width: 768px) 25vw, 50vw"
+                  className="object-cover"
+                />
+              </div>
               <figcaption className="absolute inset-x-0 bottom-0 bg-linear-to-t from-court-950/85 to-transparent p-3 pt-8 text-caption text-surface">
                 {facility.caption}
               </figcaption>
@@ -65,7 +82,7 @@ export function Courts() {
           />
         </div>
 
-        <div className="p-8 lg:p-12">
+        <div data-animate="rise" className="p-8 lg:p-12">
           <Badge>{summerCamp.badge}</Badge>
           <h3 className="mt-5 text-display-md">{summerCamp.title}</h3>
           <p className="mt-4 max-w-prose text-body text-surface/80">{summerCamp.body}</p>

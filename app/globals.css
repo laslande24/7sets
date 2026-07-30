@@ -183,17 +183,24 @@
    does not hide it. Both of those are enforced here rather than in JavaScript.
 --------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: no-preference) {
+  /* `visibility` as well as `opacity`, so GSAP's autoAlpha owns both and an
+     element waiting to be revealed cannot swallow a click or hold a tab stop
+     while it is invisible. */
   [data-js] [data-reveal],
-  [data-js] [data-reveal-group] > * {
+  [data-js] [data-reveal-group] > *,
+  [data-js] [data-animate="rise"] {
     opacity: 0;
+    visibility: hidden;
     transform: translate3d(0, var(--reveal-distance, 1.5rem), 0);
   }
 
-  /* SplitReveal hides the block until SplitText has cut it into masked lines.
-     The component clears this itself, including when the plugin fails to load,
-     so text can never be left invisible. */
-  [data-js] [data-split-reveal] {
+  /* Masked-line reveals stay hidden only until SplitText has cut them up. Both
+     the component and the page orchestrator clear this themselves, including
+     when the plugin chunk fails to load, so text is never left invisible. */
+  [data-js] [data-split-reveal],
+  [data-js] [data-animate="lines"] {
     opacity: 0;
+    visibility: hidden;
   }
 }
 

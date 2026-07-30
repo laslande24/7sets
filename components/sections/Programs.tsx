@@ -14,10 +14,14 @@ export function Programs() {
   return (
     <SectionShell id="programs" padded={false} className="py-16 md:py-24">
       <div className="px-gutter">
-        <Eyebrow set={3}>{sectionCopy.programs.eyebrow}</Eyebrow>
+        <div data-animate="rise">
+          <Eyebrow set={3}>{sectionCopy.programs.eyebrow}</Eyebrow>
+        </div>
         <div className="mt-4 flex flex-wrap items-end justify-between gap-x-gutter gap-y-4">
-          <h2 className="max-w-[18ch] text-display-lg">{sectionCopy.programs.heading}</h2>
-          <p className="max-w-[38ch] text-body text-ink/70">
+          <h2 data-animate="lines" className="max-w-[18ch] text-display-lg">
+            {sectionCopy.programs.heading}
+          </h2>
+          <p data-animate="rise" className="max-w-[38ch] text-body text-ink/70">
             {sectionCopy.programs.standfirst}
           </p>
         </div>
@@ -31,6 +35,7 @@ export function Programs() {
           {programs.map((program) => (
             <li
               key={program.id}
+              data-animate="rise"
               className="flex w-[min(20rem,80vw)] shrink-0 snap-start flex-col rounded-md bg-canvas p-6 ring-1 ring-ink/10 ring-inset"
             >
               <div className="flex items-baseline justify-between gap-3">

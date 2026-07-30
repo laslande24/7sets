@@ -1,6 +1,7 @@
 import { FloatingNav } from "@/components/layout/FloatingNav";
 import { Footer } from "@/components/layout/Footer";
 import { ScoreRail } from "@/components/layout/ScoreRail";
+import { SectionMotion } from "@/components/motion";
 import { Coaches } from "@/components/sections/Coaches";
 import { Courts } from "@/components/sections/Courts";
 import { Faq } from "@/components/sections/Faq";
@@ -21,6 +22,7 @@ export default function Home() {
     <>
       <FloatingNav />
       <ScoreRail />
+      <SectionMotion />
       <main className="flex flex-col gap-gutter py-gutter">
         <Hero />
         <Manifesto />

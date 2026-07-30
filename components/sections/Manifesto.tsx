@@ -13,14 +13,19 @@ export function Manifesto() {
     <SectionShell id="manifesto">
       <div className="grid gap-x-gutter gap-y-10 lg:grid-cols-12">
         <div className="lg:col-span-5">
-          <Eyebrow set={2}>{manifesto.eyebrow}</Eyebrow>
-          <h2 className="mt-4 text-display-lg">{manifesto.title}</h2>
+          <div data-animate="rise">
+            <Eyebrow set={2}>{manifesto.eyebrow}</Eyebrow>
+          </div>
+          <h2 data-animate="lines" className="mt-4 text-display-lg">
+            {manifesto.title}
+          </h2>
         </div>
 
         <div className="space-y-5 lg:col-span-6 lg:col-start-7">
           {manifesto.body.map((paragraph) => (
             <p
               key={paragraph.slice(0, 24)}
+              data-animate="rise"
               className="max-w-prose text-body-lg text-ink/70"
             >
               {paragraph}
@@ -31,7 +36,7 @@ export function Manifesto() {
 
       <dl className="mt-16 grid grid-cols-2 gap-x-gutter gap-y-10 border-t border-ink/12 pt-10 lg:mt-24 lg:grid-cols-4">
         {manifesto.stats.map((stat) => (
-          <div key={stat.label}>
+          <div key={stat.label} data-animate="rise">
             <dt className="sr-only">{stat.label}</dt>
             <dd>
               <span

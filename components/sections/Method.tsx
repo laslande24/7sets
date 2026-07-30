@@ -13,11 +13,17 @@ export function Method() {
   return (
     <SectionShell id="method" tone="court">
       <div className="max-w-[46rem]">
-        <Eyebrow set={4} onDark>
-          {method.eyebrow}
-        </Eyebrow>
-        <h2 className="mt-4 text-display-lg">{method.title}</h2>
-        <p className="mt-4 text-body-lg text-surface/75">{method.body}</p>
+        <div data-animate="rise">
+          <Eyebrow set={4} onDark>
+            {method.eyebrow}
+          </Eyebrow>
+        </div>
+        <h2 data-animate="lines" className="mt-4 text-display-lg">
+          {method.title}
+        </h2>
+        <p data-animate="rise" className="mt-4 text-body-lg text-surface/75">
+          {method.body}
+        </p>
       </div>
 
       <svg
@@ -41,7 +47,7 @@ export function Method() {
 
       <ol className="mt-12 grid gap-x-gutter gap-y-10 lg:mt-4 lg:grid-cols-4">
         {method.steps.map((step, index) => (
-          <li key={step.id} data-method-step={step.id}>
+          <li key={step.id} data-method-step={step.id} data-animate="rise">
             <p className="text-label text-lime-300 tabular-nums">
               {String(index + 1).padStart(2, "0")}
             </p>

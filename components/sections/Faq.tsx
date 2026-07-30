@@ -23,9 +23,13 @@ export function Faq() {
     <SectionShell id="faq">
       <div className="grid gap-x-gutter gap-y-10 lg:grid-cols-12">
         <div className="lg:col-span-4">
-          <Eyebrow>{sectionCopy.faq.eyebrow}</Eyebrow>
-          <h2 className="mt-4 text-display-lg">{sectionCopy.faq.heading}</h2>
-          <p className="mt-4 max-w-prose text-body text-ink/70">
+          <div data-animate="rise">
+            <Eyebrow>{sectionCopy.faq.eyebrow}</Eyebrow>
+          </div>
+          <h2 data-animate="lines" className="mt-4 text-display-lg">
+            {sectionCopy.faq.heading}
+          </h2>
+          <p data-animate="rise" className="mt-4 max-w-prose text-body text-ink/70">
             {sectionCopy.faq.standfirst}
           </p>
         </div>
@@ -35,7 +39,11 @@ export function Faq() {
             const isOpen = openId === item.id;
             const panelId = `${baseId}-${item.id}`;
             return (
-              <div key={item.id} className="border-b border-ink/12 first:border-t">
+              <div
+                key={item.id}
+                data-animate="rise"
+                className="border-b border-ink/12 first:border-t"
+              >
                 <dt>
                   <button
                     type="button"
