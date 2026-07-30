@@ -153,32 +153,13 @@ export function SignatureMotion() {
           },
         });
 
-        // Cards off the centre sit slightly smaller and paler, so the one being
-        // read is the one that reads. Tied to the horizontal tween, not to
-        // vertical scroll.
-        const cards = gsap.utils.toArray<HTMLElement>("[data-programs-track] > li");
-        for (const item of cards) {
-          const tween = gsap.fromTo(
-            item,
-            { scale: 0.94, opacity: 0.55 },
-            {
-              scale: 1,
-              opacity: 1,
-              ease: "none",
-              scrollTrigger: {
-                containerAnimation: scrollTween,
-                trigger: item,
-                start: "left 88%",
-                end: "center 55%",
-                scrub: true,
-              },
-            },
-          );
-          add(() => {
-            tween.scrollTrigger?.kill();
-            tween.kill();
-          });
-        }
+        // There was a per-card focus effect here — off-centre cards scaled and
+        // dimmed against `containerAnimation`. It is gone on purpose. The cards
+        // already carry `data-animate="rise"` for their entrance, and a second
+        // owner animating `opacity` on the same elements is exactly the clash
+        // that broke SET 07: the rise batch's `overwrite` killed it and left the
+        // cards frozen part-way. The pin and the horizontal travel are the
+        // signature moment here; the section does not need a second one.
 
         add(() => {
           scrollTween.scrollTrigger?.kill();
@@ -307,23 +288,45 @@ export function SignatureMotion() {
       }
 
       /* ========================================= SET 07 — membership fan */
-      // The three plans arrive stacked and open out. The featured one lands
-      // last and sits fractionally higher.
-      const plans = gsap.utils.toArray<HTMLElement>("[data-membership-card]");
-      if (isDesktop && plans.length === 3) {
-        const tween = gsap.from(plans, {
-          xPercent: (index) => (index - 1) * -30,
-          y: 40,
-          rotate: (index) => (index - 1) * -3,
-          autoAlpha: 0,
-          duration: duration.slow,
-          ease: ease.outExpo,
-          stagger: 0.08,
-          scrollTrigger: { trigger: plans[0], start: "top 80%", once: true },
-        });
+      // The three plans arrive stacked and open out.
+      //
+      // This owns the cards outright — they carry `data-animate="fan"`, not
+      // "rise", so SectionMotion never touches them. When both did, the batch's
+      // `overwrite` killed this tween mid-flight and left `xPercent` and
+      // `rotate` frozen at their start values: the cards read as static because
+      // the only animation still running was the one that could not undo the
+      // other's transform.
+      //
+      // Explicit fromTo rather than `from`, so the start state is stated rather
+      // than inferred, and the CSS pre-state has nothing to disagree with.
+      const plans = gsap.utils.toArray<HTMLElement>('[data-animate="fan"]');
+      if (plans.length) {
+        const tween = gsap.fromTo(
+          plans,
+          {
+            // Stacked and tilted on desktop; a plain rise on narrow screens,
+            // where three overlapping cards would just be a mess.
+            xPercent: (index: number) => (isDesktop ? (index - 1) * -30 : 0),
+            rotate: (index: number) => (isDesktop ? (index - 1) * -3 : 0),
+            y: 40,
+            autoAlpha: 0,
+          },
+          {
+            xPercent: 0,
+            rotate: 0,
+            y: 0,
+            autoAlpha: 1,
+            duration: duration.slow,
+            ease: ease.outExpo,
+            stagger: 0.08,
+            clearProps: "transform",
+            scrollTrigger: { trigger: plans[0], start: "top 85%", once: true },
+          },
+        );
         add(() => {
           tween.scrollTrigger?.kill();
           tween.kill();
+          gsap.set(plans, { clearProps: "all" });
         });
       }
 

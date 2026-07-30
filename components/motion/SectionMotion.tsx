@@ -49,7 +49,10 @@ export function SectionMotion() {
               duration: duration.base,
               stagger: STAGGER,
               ease: ease.outExpo,
-              overwrite: true,
+              // "auto", not true: true kills every tween on these targets,
+              // including one from SignatureMotion that owns other properties.
+              // "auto" only clears the properties this tween actually sets.
+              overwrite: "auto",
               onStart: () => {
                 for (const el of batch)
                   (el as HTMLElement).style.willChange = "transform, opacity";

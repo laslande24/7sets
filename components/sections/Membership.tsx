@@ -70,7 +70,10 @@ export function Membership() {
           <li
             key={plan.id}
             data-membership-card
-            data-animate="rise"
+            /* "fan", not "rise": these three are owned end to end by the fan in
+               SignatureMotion. Two orchestrators animating the same element is
+               what broke them the first time. */
+            data-animate="fan"
             className={cn(
               "flex flex-col rounded-md p-8",
               plan.featured

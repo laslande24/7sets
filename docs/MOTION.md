@@ -107,8 +107,25 @@ rest state is cleared first. Desktop only — the path is hidden below `lg`.
 
 ### SET 07 — membership fan
 
-The three plans arrive stacked (`xPercent` ±30, `rotate` ±3) and open out,
-stagger 0.08, once at `top 80%`. Desktop only.
+The three plans arrive stacked (`xPercent` ±30, `rotate` ±3, `y` 40) and open
+out, stagger 0.08, once at `top 85%`. On narrow screens the offsets and the
+rotation drop to zero and it becomes a plain rise — three overlapping cards on a
+phone is just a mess.
+
+They carry `data-animate="fan"`, **not** `"rise"`, and this owns them outright.
+When both orchestrators had them, the rise batch's `overwrite` killed this tween
+mid-flight and left `xPercent` and `rotate` frozen at their start values: the
+cards read as permanently static because the only animation still running could
+not undo the other's transform. One owner per element is the rule; the batch now
+uses `overwrite: "auto"` so it clears only the properties it actually sets.
+
+### SET 03 — no per-card focus effect
+
+There was one — off-centre cards scaled and dimmed against `containerAnimation`
+— and it is deliberately gone. Same clash: the cards already carry
+`data-animate="rise"` for their entrance, and a second owner animating `opacity`
+on them was killed by the batch in exactly the same way. The pin and the
+horizontal travel are the moment; the section does not need a second one.
 
 ### Voices — the marquee
 
@@ -179,7 +196,10 @@ hand because `requestAnimationFrame` does not run in a hidden pane.
 | DrawSVG                              | dasharray `0, 999999` → `644, 269`  |
 | MotionPath ball                      | follows the path                    |
 | Match Point ball                     | crosses to x 1031                   |
+| Membership fan, at load              | stacked ±113px, tilted ±3°, y +40   |
+| Membership fan, after trigger        | all three opacity 1, `transform: none` |
 | Full scroll-through, elements hidden | **0 of 66**                         |
+| Frozen transforms after full pass    | **0**                               |
 | Leftover clip-paths                  | **0**                               |
 | Once-triggers self-killed            | 106 → 23                            |
 | Horizontal overflow                  | **0** at both widths                |

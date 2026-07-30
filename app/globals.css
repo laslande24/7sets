@@ -194,6 +194,13 @@
     transform: translate3d(0, var(--reveal-distance, 1.5rem), 0);
   }
 
+  /* The membership fan sets its own offsets and rotation, so it only needs the
+     element kept out of sight until it does. */
+  [data-js] [data-animate="fan"] {
+    opacity: 0;
+    visibility: hidden;
+  }
+
   /* Masked-line reveals stay hidden only until SplitText has cut them up. Both
      the component and the page orchestrator clear this themselves, including
      when the plugin chunk fails to load, so text is never left invisible. */
