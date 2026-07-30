@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { Counter, Magnetic, Parallax, Reveal, SplitReveal } from "@/components/motion";
 import { ContrastTable } from "@/components/styleguide/ContrastTable";
 import { EaseCurve } from "@/components/styleguide/EaseCurve";
+import { ScrollProgressDemo } from "@/components/styleguide/ScrollProgressDemo";
 import { TokenValue } from "@/components/styleguide/TokenValue";
 import {
   ArrowButton,
@@ -50,6 +52,7 @@ const CHAPTERS = [
   ["spacing", "Spacing"],
   ["type", "Type"],
   ["motion", "Motion"],
+  ["motion-primitives", "Motion primitives"],
   ["buttons", "Button"],
   ["blocks", "Pill, Badge, Eyebrow"],
   ["cards", "Card"],
@@ -302,6 +305,117 @@ export default function StyleguidePage() {
                 </li>
               ))}
             </ul>
+          </Specimen>
+        </div>
+      </Chapter>
+
+      {/* ------------------------------------------------ motion primitives */}
+      <Chapter
+        id="motion-primitives"
+        title="Motion primitives"
+        blurb="Six pieces in components/motion/. Every one of them hides its starting state in CSS behind a `.js` class rather than in a gsap.set, so a page with JavaScript off renders finished and reduced motion never leaves anything invisible. Scroll past each demo to fire it; reload to run them again."
+      >
+        <div className="space-y-14">
+          <Specimen label="Reveal — fade and rise on enter">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Reveal className="rounded-md bg-canvas p-6 ring-1 ring-ink/10 ring-inset">
+                <p className="font-mono text-caption">&lt;Reveal&gt;</p>
+                <p className="mt-2 text-body text-ink/70">
+                  Default: 24px, `--dur-base`, ease-out-expo, fires once at `top 82%`.
+                </p>
+              </Reveal>
+              <Reveal
+                distance={48}
+                delay={0.1}
+                className="rounded-md bg-canvas p-6 ring-1 ring-ink/10 ring-inset"
+              >
+                <p className="font-mono text-caption">
+                  distance={48} delay={0.1}
+                </p>
+                <p className="mt-2 text-body text-ink/70">
+                  Distance is a prop, not a magic number in the component.
+                </p>
+              </Reveal>
+            </div>
+          </Specimen>
+
+          <Specimen label="Reveal — stagger moves the target to the children">
+            <Reveal as="ul" stagger={0.08} className="grid gap-3 sm:grid-cols-4">
+              {["Assess", "Drill", "Play", "Compete"].map((step) => (
+                <li
+                  key={step}
+                  className="rounded-md bg-canvas p-5 text-display-md ring-1 ring-ink/10 ring-inset"
+                >
+                  {step}
+                </li>
+              ))}
+            </Reveal>
+          </Specimen>
+
+          <Specimen label="SplitReveal — masked lines, then words">
+            <div className="space-y-8">
+              <SplitReveal as="p" className="max-w-[20ch] text-display-lg">
+                Coaching that survives contact with a real week.
+              </SplitReveal>
+              <SplitReveal
+                as="p"
+                by="words"
+                stagger={0.03}
+                className="max-w-prose text-body-lg"
+              >
+                Split after the webfont lands, never before — measuring line breaks in the
+                fallback face puts every line in the wrong place.
+              </SplitReveal>
+            </div>
+          </Specimen>
+
+          <Specimen label="Parallax — offset tied to scroll, as a fraction of the element's height">
+            <div className="grid gap-4 sm:grid-cols-3">
+              {[0.05, 0.15, 0.3].map((speed) => (
+                <Parallax key={speed} speed={speed}>
+                  <div className="grid h-40 place-items-center rounded-md bg-court text-surface">
+                    <span className="font-mono text-caption">speed={speed}</span>
+                  </div>
+                </Parallax>
+              ))}
+            </div>
+          </Specimen>
+
+          <Specimen label="Counter — renders the final value, counts only if off-screen at load">
+            <dl className="grid grid-cols-2 gap-6 sm:grid-cols-4">
+              {[
+                { to: 11, suffix: "", label: "courts" },
+                { to: 14, suffix: "", label: "coaches" },
+                { to: 640, suffix: "+", label: "members" },
+                { to: 17, suffix: "", label: "years" },
+              ].map((stat) => (
+                <div key={stat.label}>
+                  <dd className="text-display-lg tabular-nums">
+                    <Counter to={stat.to} suffix={stat.suffix} />
+                  </dd>
+                  <dt className="mt-1 text-label text-ink/70 lowercase">{stat.label}</dt>
+                </div>
+              ))}
+            </dl>
+          </Specimen>
+
+          <Specimen label="Magnetic — fine pointers only, and weak on purpose">
+            <div className="flex flex-wrap items-center gap-6">
+              <Magnetic>
+                <Button>Book free trial</Button>
+              </Magnetic>
+              <Magnetic strength={0.35} radius={80}>
+                <Button variant="secondary">strength=0.35 — too much</Button>
+              </Magnetic>
+              <p className="max-w-[34ch] text-caption text-ink/60">
+                A button that moves far enough to be obvious is a button people miss. The
+                second one is here to show where that line is.
+              </p>
+            </div>
+          </Specimen>
+
+          <Specimen label="useScrollProgress — 0 → 1 across the viewport">
+            <ScrollProgressDemo />
           </Specimen>
         </div>
       </Chapter>

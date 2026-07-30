@@ -171,6 +171,32 @@
     );
 }
 
+/* ---------------------------------------------------------------------------
+   Motion pre-states.
+
+   Gated twice. On `[data-js]`, which an inline script in the root layout sets
+   before first paint — so a page with JavaScript off renders finished instead
+   of blank, and there is no flash of unstyled content on the way in. And on
+   no-preference, so reduced motion never hides anything at all.
+
+   Rule 4 in CLAUDE.md: reduced motion lands an element in its final state, it
+   does not hide it. Both of those are enforced here rather than in JavaScript.
+--------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  [data-js] [data-reveal],
+  [data-js] [data-reveal-group] > * {
+    opacity: 0;
+    transform: translate3d(0, var(--reveal-distance, 1.5rem), 0);
+  }
+
+  /* SplitReveal hides the block until SplitText has cut it into masked lines.
+     The component clears this itself, including when the plugin fails to load,
+     so text can never be left invisible. */
+  [data-js] [data-split-reveal] {
+    opacity: 0;
+  }
+}
+
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;

@@ -97,6 +97,15 @@ source for `FAQPage`. **7SETS is fictional** — address, phone (an Ofcom drama
 range), prices and coach records are invented but internally consistent, and the
 coaches render as monograms on purpose. See `docs/ASSETS.md`.
 
+## Motion
+
+Lenis + ScrollTrigger via `components/motion/SmoothScrollProvider.tsx`; plugins
+registered once in `lib/gsap/`, SplitText/DrawSVG/MotionPath lazy. Durations and
+easings are read from the CSS tokens by `lib/gsap/config.ts`, so motion cannot
+drift from design. Pre-animation states are CSS behind `[data-js]`, never a
+`gsap.set`; an inline script drops them if the runtime never arrives. The six
+primitives are in `components/motion/`, demonstrated on `/styleguide`.
+
 ## Commands
 
 `npm run dev` (Turbopack) · `build` · `lint` · `typecheck` (strict) ·
@@ -107,15 +116,9 @@ the relevant guide in `node_modules/next/dist/docs/` — see `AGENTS.md`.
 
 ## Phases
 
-- [x] **0** — Scoping & foundations
-- [x] **1** — Design system & UI primitives (`/styleguide`)
-- [x] **2** — Pixel-perfect hero, static
-- [x] **3** — Content & sections, static
-- [ ] **4** — GSAP engine, Lenis, score rail
-- [ ] **5** — Signature scroll animations
-- [ ] **6** — Micro-interactions, booking form, a11y
-- [ ] **7** — SEO, structured data, GEO
-- [ ] **8** — Core Web Vitals
-- [ ] **9** — QA, documentation, release
+Done — **0** scoping · **1** design system · **2** hero · **3** content ·
+**4** GSAP engine, Lenis, score rail.
+Next — **5** signature animations · **6** micro-interactions, form, a11y ·
+**7** SEO & structured data · **8** Core Web Vitals · **9** QA & release.
 
 One phase = one session = one commit. `/clear` between phases.
