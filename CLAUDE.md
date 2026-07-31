@@ -15,6 +15,9 @@ scoreboard — `SET 03 / 07`, with an inner counter stepping
    measures 2.0:1 — a WCAG failure. Ink measures 9.45:1. This is the only place
    we overrule the mockup.
 3. **Animate `transform` and `opacity` only** — never `width`/`height`/`top`/`left`.
+   One exception, stated so it stays one: the FAQ accordion tweens `height`,
+   because the layout below it is the thing that has to move and no transform
+   can push it. Click-driven, one element, never scroll-linked.
 4. **`prefers-reduced-motion: reduce` is honoured everywhere**, no exceptions.
    Reduced motion means the element lands in its final state immediately — never
    invisible.
@@ -111,10 +114,27 @@ fade and rise), `"lines"` (masked SplitText), `"parallax"` (+
 `data-parallax-speed`), and `data-count-to`. The six standalone primitives in
 `components/motion/` are for one-off use, demonstrated on `/styleguide`.
 
+## Accessibility
+
+WCAG 2.2 AA, audited section by section in `docs/ACCESSIBILITY.md` — read that
+before changing a colour, a target size or a focus order. Two rules that are
+easy to break by accident:
+
+- **A scroll container needs a tab stop, or a keyboard cannot reach it.** The
+  rails declare `data-rail` and `components/a11y/RailKeyboard.tsx` gives them
+  one, but only while they are actually scrolling. Cards marked `data-rail-item`
+  also get arrow keys, and are brought into view by hand — the pinned rail moves
+  by `x`, so the browser's own scroll-into-view has nothing to scroll.
+- **Anything that moves for more than five seconds must be stoppable.** The
+  marquee and the hero carousel pause on hover _and_ on focus; the carousel also
+  stops for good once a reader presses one of its arrows.
+
 ## Commands
 
 `npm run dev` (Turbopack) · `build` · `lint` · `typecheck` (strict) ·
-`format` (Prettier). `npm test` is Playwright and lands in Phase 6.
+`format` (Prettier). `npm test` runs Playwright against a production build on
+port 3100 — journeys, the rail's keyboard behaviour, axe (zero critical or
+serious), and hero screenshots at three widths under reduced motion.
 
 Next.js 16 has breaking changes versus 15. Before writing framework code, read
 the relevant guide in `node_modules/next/dist/docs/` — see `AGENTS.md`.
@@ -122,8 +142,8 @@ the relevant guide in `node_modules/next/dist/docs/` — see `AGENTS.md`.
 ## Phases
 
 Done — **0** scoping · **1** design system · **2** hero · **3** content ·
-**4** GSAP engine, Lenis, score rail · **5** signature animations (`docs/MOTION.md`).
-Next — **6** micro-interactions, form, a11y · **7** SEO & structured data ·
-**8** Core Web Vitals · **9** QA & release.
+**4** GSAP engine, Lenis, score rail · **5** signature animations (`docs/MOTION.md`) ·
+**6** micro-interactions, booking form, a11y (`docs/ACCESSIBILITY.md`).
+Next — **7** SEO & structured data · **8** Core Web Vitals · **9** QA & release.
 
 One phase = one session = one commit. `/clear` between phases.

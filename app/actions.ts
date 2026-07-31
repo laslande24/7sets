@@ -53,7 +53,8 @@ export async function bookTrial(_previous: BookingResult | null, formData: FormD
   if (overRateLimit(ip)) {
     return {
       status: "error",
-      message: "That is a lot of requests. Give it ten minutes, or call us on 020 7946 0117.",
+      message:
+        "That is a lot of requests. Give it ten minutes, or call us on 020 7946 0117.",
     } satisfies BookingResult;
   }
 

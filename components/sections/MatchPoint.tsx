@@ -1,4 +1,4 @@
-import { Button, ButtonLink, Eyebrow, SectionShell } from "@/components/ui";
+import { ButtonLink, Eyebrow, SectionShell } from "@/components/ui";
 import { matchPoint } from "@/content/site";
 
 /**
@@ -36,7 +36,14 @@ export function MatchPoint() {
       />
 
       <div data-animate="rise" className="mt-10 flex flex-wrap items-center gap-2.5">
-        <Button size="lg">{matchPoint.cta.label}</Button>
+        {/* The wrapper carries the hook rather than the link itself: the pulse
+            belongs to this section, and a one-off data attribute on a shared
+            primitive would have to be declared in its prop type forever. */}
+        <span data-matchpoint-cta className="inline-flex">
+          <ButtonLink href={matchPoint.cta.href} size="lg">
+            {matchPoint.cta.label}
+          </ButtonLink>
+        </span>
         <ButtonLink href={matchPoint.secondary.href} variant="secondary" size="lg">
           {matchPoint.secondary.label}
         </ButtonLink>

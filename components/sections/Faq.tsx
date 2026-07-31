@@ -1,23 +1,78 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 
 import { Eyebrow, SectionShell } from "@/components/ui";
 import { sectionCopy } from "@/content/copy";
 import { faq } from "@/content/faq";
 import { cn } from "@/lib/cn";
+import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
+import { motionTokens } from "@/lib/gsap/config";
 
 /**
  * FAQ — a native accordion, no library.
  *
  * `<button aria-expanded>` controlling a region by id, one panel open at a
- * time, and the panel removed from the tree when closed rather than merely
- * hidden. These ten questions and answers are also the only source for the
- * Phase 7 `FAQPage` structured data — never restate them in the JSON-LD.
+ * time. These ten questions and answers are also the only source for the Phase 7
+ * `FAQPage` structured data — never restate them in the JSON-LD.
+ *
+ * Every panel stays in the DOM and is collapsed by height rather than removed,
+ * which is what makes the open animate. It also means the server sends ten
+ * answers, all of them open: with JavaScript off this is a plain list of
+ * questions and answers rather than one answer and nine dead buttons. The
+ * closed ones are marked `inert` from JavaScript, never in the markup, so that
+ * fallback stays readable — it is set in a layout effect, before the first
+ * paint, so there is no frame where the page shows all ten and then folds.
+ *
+ * The height tween is the one exception to rule 3 in CLAUDE.md. Everything the
+ * rule protects — scroll-linked work, anything running per frame while the page
+ * moves — is untouched by it: this is one element, once, in response to a click,
+ * and the thing being animated *is* the layout. A transform cannot push the
+ * questions below it down the page.
  */
 export function Faq() {
   const [openId, setOpenId] = useState<string | null>(faq[0].id);
   const baseId = useId();
+  const panels = useRef<Record<string, HTMLElement | null>>({});
+  /** `undefined` until the first pass, which sets heights instead of tweening. */
+  const previous = useRef<string | null | undefined>(undefined);
+
+  useGSAP(
+    () => {
+      const { duration, ease } = motionTokens();
+      const reduced = prefersReducedMotion();
+      const firstPass = previous.current === undefined;
+
+      for (const item of faq) {
+        const panel = panels.current[item.id];
+        if (!panel) continue;
+
+        const open = openId === item.id;
+        // Not an attribute in the JSX: rendering it on the server would hide
+        // nine answers from a reader who has no JavaScript to open them with.
+        panel.inert = !open;
+
+        if (firstPass || reduced) {
+          gsap.set(panel, { height: open ? "auto" : 0 });
+          continue;
+        }
+
+        // Only the two panels that changed move; the other eight are already
+        // where they belong and re-tweening them would fight a running one.
+        if ((previous.current === item.id) === open) continue;
+
+        gsap.to(panel, {
+          height: open ? "auto" : 0,
+          duration: duration.base,
+          ease: ease.outQuart,
+          overwrite: true,
+        });
+      }
+
+      previous.current = openId;
+    },
+    { dependencies: [openId] },
+  );
 
   return (
     <SectionShell id="faq">
@@ -73,11 +128,18 @@ export function Faq() {
                   </button>
                 </dt>
 
-                {isOpen ? (
-                  <dd id={panelId} className="pb-6">
-                    <p className="max-w-prose text-body text-ink/70">{item.answer}</p>
-                  </dd>
-                ) : null}
+                {/* The padding belongs to the paragraph, not the panel: on a
+                    panel collapsed to `height: 0` it would still occupy its
+                    24px and the accordion would never quite close. */}
+                <dd
+                  id={panelId}
+                  ref={(node) => {
+                    panels.current[item.id] = node;
+                  }}
+                  className="overflow-hidden"
+                >
+                  <p className="max-w-prose pb-6 text-body text-ink/70">{item.answer}</p>
+                </dd>
               </div>
             );
           })}

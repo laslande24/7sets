@@ -9,6 +9,7 @@ import {
   useGSAP,
 } from "@/lib/gsap";
 import { motionTokens } from "@/lib/gsap/config";
+import { PROGRAMS_PIN_ID } from "@/lib/rails";
 
 /**
  * Phase 5 — the moments the page is remembered for.
@@ -143,6 +144,12 @@ export function SignatureMotion() {
           // position stops matching the scroll position.
           ease: "none",
           scrollTrigger: {
+            // Named so RailKeyboard can find it. While this pin is live the
+            // rail's horizontal position is a function of the page's vertical
+            // scroll, so bringing a focused card into view means moving the
+            // window, not the element — and the only honest way to work out
+            // where to move it to is to ask the trigger.
+            id: PROGRAMS_PIN_ID,
             trigger: viewport,
             pin: viewport,
             start: "top top",
@@ -272,14 +279,21 @@ export function SignatureMotion() {
           },
         });
 
+        // WCAG 2.2.2: content that moves for more than five seconds needs a way
+        // to stop it, and hover is not one a keyboard has. RailKeyboard makes
+        // this band focusable, so focus pauses it on the same terms as hover.
         const pause = () => loop.pause();
         const resume = () => loop.play();
         marqueeViewport.addEventListener("pointerenter", pause);
         marqueeViewport.addEventListener("pointerleave", resume);
+        marqueeViewport.addEventListener("focusin", pause);
+        marqueeViewport.addEventListener("focusout", resume);
 
         add(() => {
           marqueeViewport.removeEventListener("pointerenter", pause);
           marqueeViewport.removeEventListener("pointerleave", resume);
+          marqueeViewport.removeEventListener("focusin", pause);
+          marqueeViewport.removeEventListener("focusout", resume);
           velocity.kill();
           loop.kill();
           marqueeViewport.style.overflowX = "";
@@ -337,7 +351,7 @@ export function SignatureMotion() {
       const matchPoint = document.getElementById("match-point");
 
       if (isDesktop && ball && matchPoint) {
-        const cta = matchPoint.querySelector<HTMLElement>("button");
+        const cta = matchPoint.querySelector<HTMLElement>("[data-matchpoint-cta]");
         const travel = () => matchPoint.offsetWidth * 0.82;
 
         const tl = gsap.timeline({

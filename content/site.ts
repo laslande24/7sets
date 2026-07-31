@@ -67,6 +67,7 @@ export const sections = [
   { id: "voices", label: "Voices" },
   { id: "faq", label: "FAQ" },
   { id: "match-point", label: "Contact" },
+  { id: "book", label: "Book a trial" },
 ] as const;
 
 /** The four the mockup puts in the floating nav, in its order. */
@@ -81,7 +82,9 @@ export const matchPoint = {
   eyebrow: "Match point",
   title: "Book a court. Bring a racket. We do the rest.",
   body: "First session is free, whatever your level. Forty-five minutes, one coach, no sales pitch at the end.",
-  cta: { label: "Book free trial", href: "#match-point" },
+  // The booking form, not this section. A CTA that scrolls to itself is the
+  // kind of thing that only shows up when someone actually presses it.
+  cta: { label: "Book free trial", href: "#book" },
   secondary: {
     label: `Call ${site.phoneDisplay}`,
     href: `tel:${site.phone.replace(/\s/g, "")}`,

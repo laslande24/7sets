@@ -45,7 +45,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={jost.variable}>
+    // `suppressHydrationWarning` is for the attribute the script above adds.
+    // React compares <html>'s attributes on hydration and finds one it never
+    // rendered, which it reports as a mismatch on every single load. Rendering
+    // `data-js` in the JSX instead would defeat the point of it — it has to be
+    // absent when scripting is off.
+    <html lang="en" className={jost.variable} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: MARK_AS_SCRIPTED }} />
       </head>

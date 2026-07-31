@@ -52,7 +52,9 @@ export function Method() {
               {String(index + 1).padStart(2, "0")}
             </p>
             <h3 className="mt-2 text-display-md">{step.title}</h3>
-            <p className="mt-1 text-caption tracking-wider text-surface/60 uppercase">
+            {/* Not /60: white at 60% over court-700 is 4.43:1, just under the
+                4.5 that 14px text needs. /70 is 5.44. */}
+            <p className="mt-1 text-caption tracking-wider text-surface/70 uppercase">
               {step.duration}
             </p>
             <p className="mt-3 max-w-[34ch] text-body text-surface/75">{step.body}</p>

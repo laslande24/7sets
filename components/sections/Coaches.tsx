@@ -1,6 +1,6 @@
 import { Eyebrow, SectionShell } from "@/components/ui";
 import { coaches } from "@/content/coaches";
-import { sectionCopy } from "@/content/copy";
+import { labels, sectionCopy } from "@/content/copy";
 
 /**
  * SET 05 — the coaching staff.
@@ -31,43 +31,56 @@ export function Coaches() {
 
       {/* Six stacked cards is a 3,400px scroll on a phone, so below 640 this is
           a snap carousel and above it a grid — which is also what
-          docs/CONTENT-ARCHITECTURE.md specifies for this set. */}
-      <ul className="mt-12 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 sm:grid sm:grid-cols-2 sm:gap-x-gutter sm:gap-y-10 sm:overflow-visible sm:pb-0 lg:grid-cols-3">
-        {coaches.map((coach) => (
-          <li
-            key={coach.id}
-            data-coach-card
-            data-animate="rise"
-            className="group w-[min(17rem,72vw)] shrink-0 snap-start sm:w-auto sm:shrink"
-          >
-            <div className="relative overflow-hidden rounded-md bg-court">
-              <div
-                aria-hidden="true"
-                className="grid aspect-[4/5] place-items-center bg-linear-to-br from-court-600 to-court-900 transition-transform duration-(--dur-slow) ease-out-quart group-hover:scale-[1.04]"
-              >
-                <span className="text-display-xl text-surface/25">{coach.initials}</span>
-              </div>
+          docs/CONTENT-ARCHITECTURE.md specifies for this set. Below 640 that
+          makes it a scroll container with nothing focusable in it, which a
+          keyboard cannot reach at all; `data-rail` is RailKeyboard's cue to
+          give it a tab stop, and only while it is actually scrolling. */}
+      <div
+        data-rail
+        role="group"
+        aria-label={labels.rails.coaches}
+        className="mt-12 snap-x snap-mandatory overflow-x-auto pb-4 focus-visible:focus-ring sm:overflow-visible sm:pb-0"
+      >
+        <ul className="flex w-max gap-4 sm:grid sm:w-auto sm:grid-cols-2 sm:gap-x-gutter sm:gap-y-10 lg:grid-cols-3">
+          {coaches.map((coach) => (
+            <li
+              key={coach.id}
+              data-coach-card
+              data-animate="rise"
+              data-rail-item
+              className="group w-[min(17rem,72vw)] shrink-0 snap-start sm:w-auto sm:shrink"
+            >
+              <div className="relative overflow-hidden rounded-md bg-court">
+                <div
+                  aria-hidden="true"
+                  className="grid aspect-[4/5] place-items-center bg-linear-to-br from-court-600 to-court-900 transition-transform duration-(--dur-slow) ease-out-quart group-hover:scale-[1.04]"
+                >
+                  <span className="text-display-xl text-surface/25">
+                    {coach.initials}
+                  </span>
+                </div>
 
-              {/* A lime edge draws in on hover or focus. The record itself is
+                {/* A lime edge draws in on hover or focus. The record itself is
                   always present and always readable — revealing it on hover
                   alone would put it out of reach of a keyboard. */}
-              <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-court-950/90 to-transparent p-4 pt-10">
-                <span
-                  aria-hidden="true"
-                  className="absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-lime transition-transform duration-(--dur-base) ease-out-quart group-focus-within:scale-x-100 group-hover:scale-x-100"
-                />
-                <p className="text-caption text-surface/85">{coach.record}</p>
+                <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-court-950/90 to-transparent p-4 pt-10">
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-lime transition-transform duration-(--dur-base) ease-out-quart group-focus-within:scale-x-100 group-hover:scale-x-100"
+                  />
+                  <p className="text-caption text-surface/85">{coach.record}</p>
+                </div>
               </div>
-            </div>
 
-            <h3 className="mt-4 text-display-md">{coach.name}</h3>
-            <p className="text-label text-ink/70">{coach.role}</p>
-            <p className="mt-2 text-caption text-ink/60">
-              {coach.speciality} · {coach.years} years coaching
-            </p>
-          </li>
-        ))}
-      </ul>
+              <h3 className="mt-4 text-display-md">{coach.name}</h3>
+              <p className="text-label text-ink/70">{coach.role}</p>
+              <p className="mt-2 text-caption text-ink/60">
+                {coach.speciality} · {coach.years} years coaching
+              </p>
+            </li>
+          ))}
+        </ul>
+      </div>
     </SectionShell>
   );
 }

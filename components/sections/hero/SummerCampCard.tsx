@@ -4,6 +4,7 @@ import Image, { type StaticImageData } from "next/image";
 import { useRef, useState } from "react";
 
 import { ArrowButton, Badge, Card } from "@/components/ui";
+import { labels } from "@/content/copy";
 import { cn } from "@/lib/cn";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 import { motionTokens } from "@/lib/gsap/config";
@@ -20,9 +21,15 @@ import campSummer from "@/public/images/camp-summer.jpg";
  * second card shows behind and slightly to the left, which is what makes it
  * read as a stack rather than a single card.
  *
- * The stack transition and the autoplay are Phase 5. The `aria-live`
- * announcement of the new slide is Phase 6, along with the rest of the
- * carousel's assistive-tech semantics.
+ * Phase 6 gave it the semantics. The live region is deliberately `off` while
+ * the carousel is advancing itself — a polite region that fires every six
+ * seconds does not inform anybody, it just talks over whatever they were
+ * reading. It switches to `polite` the moment the reader presses an arrow,
+ * because from then on the announcement answers a question they asked.
+ *
+ * That same press stops the autoplay for good. WCAG 2.2.2 wants a way to stop
+ * moving content: hover and focus both pause it, and taking manual control ends
+ * it outright. Under reduced motion it never starts.
  */
 
 type Slide = {
@@ -62,12 +69,15 @@ export function SummerCampCard({
   ...props
 }: { className?: string } & { "data-hero-card"?: string | boolean }) {
   const [index, setIndex] = useState(0);
+  const [manual, setManual] = useState(false);
   const slide = SLIDES[index];
 
   const scope = useRef<HTMLDivElement>(null);
   const front = useRef<HTMLDivElement>(null);
   const behind = useRef<HTMLDivElement>(null);
   const busy = useRef(false);
+  // Read by the autoplay interval, which cannot see the state above.
+  const stopped = useRef(false);
 
   // The handler is built inside useGSAP, not during render: `contextSafe` is
   // handed to the callback for exactly this, and it keeps every timeline the
@@ -137,11 +147,17 @@ export function SummerCampCard({
       const root = scope.current;
       if (!root || prefersReducedMotion()) return;
 
-      let timer = window.setInterval(() => step.current(1), 6000);
+      const advanceIfRunning = () => {
+        if (stopped.current) return;
+        step.current(1);
+      };
+
+      let timer = window.setInterval(advanceIfRunning, 6000);
       const stop = () => window.clearInterval(timer);
       const start = () => {
         stop();
-        timer = window.setInterval(() => step.current(1), 6000);
+        if (stopped.current) return;
+        timer = window.setInterval(advanceIfRunning, 6000);
       };
 
       root.addEventListener("pointerenter", stop);
@@ -160,9 +176,28 @@ export function SummerCampCard({
     { scope },
   );
 
+  /** A press takes the wheel: autoplay ends and announcements begin. */
+  const take = (delta: number) => {
+    stopped.current = true;
+    setManual(true);
+    step.current(delta);
+  };
+
+  const position = labels.carousel.position
+    .replace("{{n}}", String(index + 1))
+    .replace("{{total}}", String(SLIDES.length));
+
   return (
-    <div ref={scope} className={cn("w-90 max-w-full", className)} {...props}>
-      <div className="relative">
+    <div
+      ref={scope}
+      role="group"
+      aria-roledescription="carousel"
+      aria-label={labels.carousel.label}
+      data-cursor="play"
+      className={cn("w-90 max-w-full", className)}
+      {...props}
+    >
+      <div className="relative" aria-atomic="true" aria-live={manual ? "polite" : "off"}>
         {/* The card behind, showing the stack. Decorative: the content of the
             next slide is announced when it becomes the front card. */}
         <div
@@ -192,13 +227,16 @@ export function SummerCampCard({
             <Badge>{slide.badge}</Badge>
             <h2 className="mt-1.5 truncate text-body-lg">{slide.title}</h2>
             <p className="text-caption text-surface/80">{slide.meta}</p>
+            {/* Announced with the rest of the slide, so "Junior Open Day" is
+                not the second of three things with no way to tell. */}
+            <p className="sr-only">{position}</p>
           </div>
         </Card>
       </div>
 
       <div className="mt-2 flex justify-end gap-1">
-        <ArrowButton direction="prev" size="sm" onDark onClick={() => step.current(-1)} />
-        <ArrowButton direction="next" size="sm" onDark onClick={() => step.current(1)} />
+        <ArrowButton direction="prev" size="sm" onDark onClick={() => take(-1)} />
+        <ArrowButton direction="next" size="sm" onDark onClick={() => take(1)} />
       </div>
     </div>
   );

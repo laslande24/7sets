@@ -1,5 +1,5 @@
 import { Eyebrow, SectionShell } from "@/components/ui";
-import { sectionCopy } from "@/content/copy";
+import { labels, sectionCopy } from "@/content/copy";
 import { testimonials } from "@/content/testimonials";
 
 /**
@@ -22,7 +22,18 @@ export function Voices() {
         </h2>
       </div>
 
-      <div data-marquee-viewport className="mt-12 [scrollbar-width:thin] overflow-x-auto">
+      {/* `data-rail-focus="always"` because on desktop this stops being a
+          scroller — the marquee runs and the overflow is hidden — and WCAG
+          2.2.2 still wants moving content to be stoppable. Focus pauses the
+          loop on the same terms as hover, and focus needs a tab stop. */}
+      <div
+        data-marquee-viewport
+        data-rail
+        data-rail-focus="always"
+        role="group"
+        aria-label={labels.rails.voices}
+        className="mt-12 [scrollbar-width:thin] overflow-x-auto focus-visible:focus-ring"
+      >
         <div data-marquee-track className="flex w-max gap-4 px-gutter pb-4">
           {[false, true].map((isClone) => (
             <ul

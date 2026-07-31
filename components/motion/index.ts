@@ -1,6 +1,8 @@
 export { Counter } from "./Counter";
 export type { CounterProps } from "./Counter";
 
+export { Cursor } from "./Cursor";
+
 export { Magnetic } from "./Magnetic";
 export type { MagneticProps } from "./Magnetic";
 

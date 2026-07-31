@@ -22,7 +22,11 @@ export function Footer() {
       padded={false}
       className="px-gutter py-16 md:py-20"
     >
-      <footer>
+      {/* The role is not redundant. `<footer>` is only a `contentinfo` landmark
+          when its nearest sectioning ancestor is `<body>`, and this one is
+          inside the plate's `<section>` — so without this the page has no
+          contentinfo at all, which is exactly what the audit found. */}
+      <footer role="contentinfo">
         <div className="grid gap-x-gutter gap-y-12 lg:grid-cols-12">
           <div className="lg:col-span-4">
             <p className="flex items-center gap-2">

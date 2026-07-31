@@ -15,7 +15,10 @@ export const booking = {
     playerAge: { label: "Player's age", hint: "In years. Little Aces starts at 4." },
     level: { label: "Level" },
     slot: { label: "Preferred slot" },
-    message: { label: "Anything we should know?", hint: "Injuries, kit, a nervous eight-year-old." },
+    message: {
+      label: "Anything we should know?",
+      hint: "Injuries, kit, a nervous eight-year-old.",
+    },
   },
   levels: {
     beginner: "Never held a racket",

@@ -269,6 +269,24 @@ header nav.is-condensed > * {
   backdrop-filter: blur(14px);
 }
 
+/* ---------------------------------------------------------------------------
+   Custom cursor, Phase 6.
+
+   `data-cursor-on` is written by components/motion/Cursor.tsx and only once it
+   has actually taken over — a hover-capable fine pointer, motion allowed, and
+   JavaScript running. It removes the attribute on unmount, so there is no path
+   that leaves a page with no cursor at all.
+--------------------------------------------------------------------------- */
+html[data-cursor-on] body {
+  cursor: none;
+}
+
+/* Except over a field. An I-beam says the text is editable and shows where the
+   caret will land; a disc says neither, so the system cursor wins here. */
+html[data-cursor-on] :is(input, textarea, select, [contenteditable]) {
+  cursor: auto;
+}
+
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;

@@ -1,7 +1,8 @@
 import Image from "next/image";
 
 import { SectionShell } from "@/components/ui";
-import { Button, ButtonLink } from "@/components/ui/Button";
+import { ButtonLink } from "@/components/ui/Button";
+import { heroCopy } from "@/content/copy";
 import heroCourt from "@/public/images/hero-court.jpg";
 import { SummerCampCard } from "./hero/SummerCampCard";
 
@@ -16,8 +17,9 @@ import { SummerCampCard } from "./hero/SummerCampCard";
  * from `--hero-plate-h`, which keeps it inside 100dvh and, from 1280 up, inside
  * the mockup's 1.405 proportion.
  *
- * Copy note: the mockup reads "and adults rom first swing". That is a typo in
- * the mockup and we ship "from" — see docs/design/DESIGN-ANALYSIS.md section 6.
+ * Both CTAs are links, not buttons. The primary one goes to the booking form —
+ * it was a `<button>` with no handler until Phase 6, which is to say the page's
+ * main call to action did nothing at all.
  */
 export function Hero() {
   return (
@@ -32,7 +34,7 @@ export function Hero() {
           margins — not the full width. */}
       <Image
         src={heroCourt}
-        alt="A player sitting courtside on a blue hard court, racket across her knees"
+        alt={heroCopy.imageAlt}
         fill
         priority
         quality={85}
@@ -53,18 +55,19 @@ export function Hero() {
             it "Every Champion / Starts Somewhere", which is not the break the
             mockup uses. */}
         <h1 data-hero-title className="max-w-[11em] text-display-xl text-surface">
-          Every Champion Starts Somewhere
+          {heroCopy.title}
         </h1>
 
         <p data-hero-copy className="mt-7 max-w-[31rem] text-body text-surface/90">
-          Build confidence, master every shot, and fall in love with the game. Expert
-          coaching for kids, teens, and adults from first swing to tournament play.
+          {heroCopy.standfirst}
         </p>
 
         <div data-hero-copy className="mt-5 flex flex-wrap items-center gap-2.5">
-          <Button>Book free trial</Button>
-          <ButtonLink href="#programs" variant="secondary">
-            Explore programs
+          <ButtonLink href={heroCopy.primaryCta.href}>
+            {heroCopy.primaryCta.label}
+          </ButtonLink>
+          <ButtonLink href={heroCopy.secondaryCta.href} variant="secondary">
+            {heroCopy.secondaryCta.label}
           </ButtonLink>
         </div>
 

@@ -143,7 +143,7 @@ export function Membership() {
 
             <div className="mt-auto pt-8">
               <ButtonLink
-                href="#match-point"
+                href="#book"
                 variant={plan.featured ? "primary" : "secondary"}
                 arrow={plan.featured}
                 className={cn(

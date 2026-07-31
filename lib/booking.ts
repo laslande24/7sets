@@ -12,7 +12,12 @@ import { z } from "zod";
  */
 
 export const LEVELS = ["beginner", "improver", "intermediate", "advanced"] as const;
-export const SLOTS = ["weekday-morning", "weekday-evening", "saturday", "sunday"] as const;
+export const SLOTS = [
+  "weekday-morning",
+  "weekday-evening",
+  "saturday",
+  "sunday",
+] as const;
 
 export const bookingSchema = z.object({
   firstName: z

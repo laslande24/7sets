@@ -157,15 +157,60 @@ would fight the pin's spacer.
 On `←` / `→` the top card leaves sideways with a 4° rotation while the one behind
 steps up into its place, then the new front card arrives from the opposite side.
 A `busy` latch makes it unspammable. Autoplay every 6s, paused on pointer enter
-and on focus.
+and on focus, and stopped for good the first time a reader presses an arrow.
+
+---
+
+## Phase 6 additions
+
+### The cursor
+
+A 12px disc that follows the pointer with `quickTo` and a `--dur-fast` lag,
+growing to 72px with a label over anything carrying
+`data-cursor="view" | "play" | "drag"`. Three conditions before it exists at
+all — a hover-capable fine pointer, no reduced-motion preference, and
+JavaScript. The native cursor is hidden by a `data-cursor-on` attribute on
+`<html>` which the component removes on unmount, so there is no path that leaves
+a page with no cursor; and over an input, a textarea or a select the system
+cursor comes back, because an I-beam says where the caret will land and a disc
+does not.
+
+Centring and the idle size go through `gsap.set`, not Tailwind's `translate` and
+`scale` utilities: those write the individual CSS properties, which the browser
+applies on top of the `transform` GSAP is about to write, so the disc would be
+offset twice and scaled twice.
+
+### The FAQ accordion
+
+The one place the site animates `height`, and rule 3 in `CLAUDE.md` names it as
+the single exception: the layout below the panel is the thing that has to move,
+and no transform can push it. Click-driven, one element, never scroll-linked.
+
+Every panel stays in the DOM and is collapsed to `height: 0` rather than
+unmounted — which is what makes the open animate, and also means the server
+sends ten answers, all open, for a reader with no JavaScript. The closed ones
+are marked `inert` from JavaScript in a layout effect, never in the markup, so
+that fallback stays readable and there is no frame where the page shows all ten
+and then folds.
+
+### The rails
+
+`components/a11y/RailKeyboard.tsx` is not motion, but it exists because of it.
+The pinned rail moves by `x`, so a card that receives focus off to the right
+cannot be scrolled into view by the browser — there is nothing to scroll. The
+component reads the pin's own ScrollTrigger by id (`lib/rails.ts`) and sets the
+page scroll itself. Its one subtlety: `scrollWidth > clientWidth` is true on the
+desktop rail as well, where the overflow is `visible` and the content simply
+hangs out of the box, so "does it scroll" has to ask the computed `overflow-x`
+too.
 
 ---
 
 ## Rules this all obeys
 
-1. **`transform` and `opacity` only.** The two exceptions are both paint, not
+1. **`transform` and `opacity` only.** Two of the three exceptions are paint, not
    layout, and both one-shot: `clip-path` on the plates, `stroke-dasharray` under
-   DrawSVG.
+   DrawSVG. The third is the FAQ's `height`, argued above and in `CLAUDE.md`.
 2. **`will-change` is applied when a tween starts and removed when it ends.**
    Never in a stylesheet — a permanent hint is a permanent compositor layer.
 3. **Reduced motion.** Every block above lives inside one
@@ -186,24 +231,24 @@ and on focus.
 Measured in-browser at 1440 × 900 and 390 × 844, driving `gsap.ticker.tick()` by
 hand because `requestAnimationFrame` does not run in a hidden pane.
 
-| Check                                | Result                              |
-| ------------------------------------ | ----------------------------------- |
-| Hero entrance completes              | title, copy, card all at opacity 1  |
-| Title split                          | 4 line wrappers, masked             |
-| Pin travel                           | 728px across a 2072px track         |
-| Track translation                    | 0 → −710px, linear across the range |
-| Nav contraction                      | off at 0, on at 400                 |
-| DrawSVG                              | dasharray `0, 999999` → `644, 269`  |
-| MotionPath ball                      | follows the path                    |
-| Match Point ball                     | crosses to x 1031                   |
-| Membership fan, at load              | stacked ±113px, tilted ±3°, y +40   |
+| Check                                | Result                                 |
+| ------------------------------------ | -------------------------------------- |
+| Hero entrance completes              | title, copy, card all at opacity 1     |
+| Title split                          | 4 line wrappers, masked                |
+| Pin travel                           | 728px across a 2072px track            |
+| Track translation                    | 0 → −710px, linear across the range    |
+| Nav contraction                      | off at 0, on at 400                    |
+| DrawSVG                              | dasharray `0, 999999` → `644, 269`     |
+| MotionPath ball                      | follows the path                       |
+| Match Point ball                     | crosses to x 1031                      |
+| Membership fan, at load              | stacked ±113px, tilted ±3°, y +40      |
 | Membership fan, after trigger        | all three opacity 1, `transform: none` |
-| Full scroll-through, elements hidden | **0 of 66**                         |
-| Frozen transforms after full pass    | **0**                               |
-| Leftover clip-paths                  | **0**                               |
-| Once-triggers self-killed            | 106 → 23                            |
-| Horizontal overflow                  | **0** at both widths                |
-| Mobile pin count                     | **0**                               |
+| Full scroll-through, elements hidden | **0 of 66**                            |
+| Frozen transforms after full pass    | **0**                                  |
+| Leftover clip-paths                  | **0**                                  |
+| Once-triggers self-killed            | 106 → 23                               |
+| Horizontal overflow                  | **0** at both widths                   |
+| Mobile pin count                     | **0**                                  |
 
 **Not verified here:** perceived smoothness, 60fps under 4× CPU throttling, and
 the reduced-motion pass. The pane does not composite frames, so no animation can

@@ -43,7 +43,8 @@ export function BookTrial() {
 
   /** Client message first — it arrives sooner — then whatever the server said. */
   const errorFor = (name: keyof BookingInput) =>
-    errors[name]?.message ?? (result?.status === "error" ? result.fieldErrors?.[name] : undefined);
+    errors[name]?.message ??
+    (result?.status === "error" ? result.fieldErrors?.[name] : undefined);
 
   const describedBy = (name: keyof BookingInput, hasHint = false) =>
     [hasHint ? hintId(name) : null, errorFor(name) ? errorId(name) : null]
@@ -67,10 +68,13 @@ export function BookTrial() {
           <Eyebrow onDark>{booking.eyebrow}</Eyebrow>
           <h2 className="mt-4 text-display-lg">{booking.success.heading}</h2>
           <p className="mt-4 text-body-lg text-surface/80">{booking.success.body}</p>
-          <p className="mt-6 text-caption tracking-wider text-surface/60 uppercase">
+          {/* /70, not /60: white at 60% over court-700 is 4.43:1. */}
+          <p className="mt-6 text-caption tracking-wider text-surface/70 uppercase">
             {booking.success.referenceLabel}
           </p>
-          <p className="mt-1 font-mono text-display-md tabular-nums">{result.reference}</p>
+          <p className="mt-1 font-mono text-display-md tabular-nums">
+            {result.reference}
+          </p>
           <p className="mt-8">
             <a
               href={`#${booking.id}`}
@@ -104,7 +108,9 @@ export function BookTrial() {
           {/* Announced, not just shown: a reader who cannot see the red ring
               still needs to know the submission failed. */}
           <p aria-live="polite" className="sr-only">
-            {pending ? booking.submitting : (result?.status === "error" && result.message) || ""}
+            {pending
+              ? booking.submitting
+              : (result?.status === "error" && result.message) || ""}
           </p>
 
           {result?.status === "error" && !result.fieldErrors ? (
@@ -130,7 +136,10 @@ export function BookTrial() {
                   className={fieldClasses(Boolean(errorFor(name)))}
                 />
                 {errorFor(name) ? (
-                  <span id={errorId(name)} className="mt-1.5 block text-caption text-court-800">
+                  <span
+                    id={errorId(name)}
+                    className="mt-1.5 block text-caption text-court-800"
+                  >
                     {errorFor(name)}
                   </span>
                 ) : null}
@@ -153,7 +162,10 @@ export function BookTrial() {
                 aria-describedby={describedBy("playerAge", true)}
                 className={fieldClasses(Boolean(errorFor("playerAge")))}
               />
-              <span id={hintId("playerAge")} className="mt-1.5 block text-caption text-ink/60">
+              <span
+                id={hintId("playerAge")}
+                className="mt-1.5 block text-caption text-ink/60"
+              >
                 {booking.fields.playerAge.hint}
               </span>
               {errorFor("playerAge") ? (
@@ -187,7 +199,10 @@ export function BookTrial() {
                 ))}
               </select>
               {errorFor("level") ? (
-                <span id={errorId("level")} className="mt-1.5 block text-caption text-court-800">
+                <span
+                  id={errorId("level")}
+                  className="mt-1.5 block text-caption text-court-800"
+                >
                   {errorFor("level")}
                 </span>
               ) : null}
@@ -214,7 +229,10 @@ export function BookTrial() {
                 ))}
               </select>
               {errorFor("slot") ? (
-                <span id={errorId("slot")} className="mt-1.5 block text-caption text-court-800">
+                <span
+                  id={errorId("slot")}
+                  className="mt-1.5 block text-caption text-court-800"
+                >
                   {errorFor("slot")}
                 </span>
               ) : null}
@@ -223,7 +241,8 @@ export function BookTrial() {
             <p className="sm:col-span-2">
               <label htmlFor={fieldId("message")} className="text-label">
                 {booking.fields.message.label}{" "}
-                <span className="text-ink/50 lowercase">({booking.optional})</span>
+                {/* /60, not /50: ink at 50% on white is 3.57:1. */}
+                <span className="text-ink/60 lowercase">({booking.optional})</span>
               </label>
               <textarea
                 {...register("message")}
@@ -232,7 +251,10 @@ export function BookTrial() {
                 aria-describedby={describedBy("message", true)}
                 className={cn(fieldClasses(false), "h-auto py-3")}
               />
-              <span id={hintId("message")} className="mt-1.5 block text-caption text-ink/60">
+              <span
+                id={hintId("message")}
+                className="mt-1.5 block text-caption text-ink/60"
+              >
                 {booking.fields.message.hint}
               </span>
             </p>
@@ -242,7 +264,12 @@ export function BookTrial() {
               hidden fields, and none of them use a screen reader. */}
           <p aria-hidden="true" className="absolute -left-[9999px] w-px overflow-hidden">
             <label htmlFor={fieldId("website")}>Leave this empty</label>
-            <input id={fieldId("website")} {...register("website")} tabIndex={-1} autoComplete="off" />
+            <input
+              id={fieldId("website")}
+              {...register("website")}
+              tabIndex={-1}
+              autoComplete="off"
+            />
           </p>
 
           <div className="mt-8">

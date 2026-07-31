@@ -13,6 +13,23 @@ export type SectionCopy = {
   readonly standfirst?: string;
 };
 
+/**
+ * The hero. Kept here with everything else rather than inline in the component,
+ * because Phase 7 reads the page's wording from `content/` to build the
+ * structured data and cannot go hunting through JSX for it.
+ *
+ * Copy note: the mockup reads "and adults rom first swing". That is a typo in
+ * the mockup and we ship "from" — see docs/design/DESIGN-ANALYSIS.md section 6.
+ */
+export const heroCopy = {
+  title: "Every Champion Starts Somewhere",
+  standfirst:
+    "Build confidence, master every shot, and fall in love with the game. Expert coaching for kids, teens, and adults from first swing to tournament play.",
+  primaryCta: { label: "Book free trial", href: "#book" },
+  secondaryCta: { label: "Explore programs", href: "#programs" },
+  imageAlt: "A player sitting courtside on a blue hard court, racket across her knees",
+} as const;
+
 export const sectionCopy = {
   programs: {
     eyebrow: "Programs",
@@ -72,5 +89,31 @@ export const labels = {
     programs: "Programmes",
     visit: "Visit",
     placeholderNotice: "Placeholder identity — see docs/ASSETS.md.",
+  },
+  /**
+   * Names for the horizontal rails. A scroll container that a keyboard can
+   * reach is a control, and a control with no accessible name is announced as
+   * "group" and nothing else.
+   */
+  rails: {
+    programs: "Programmes, horizontal list",
+    coaches: "Coaches, horizontal list",
+    voices: "Testimonials, horizontal list",
+    hint: "Use the left and right arrow keys to move through the list.",
+  },
+  carousel: {
+    label: "Featured this season",
+    /** `{{n}}` and `{{total}}` are substituted at render. */
+    position: "Item {{n}} of {{total}}",
+  },
+  /**
+   * What the custom cursor says over each kind of thing. Decorative — it is
+   * `aria-hidden`, never the only label on anything, and a pointer-only device
+   * never sees it.
+   */
+  cursor: {
+    view: "View",
+    play: "Play",
+    drag: "Drag",
   },
 } as const;

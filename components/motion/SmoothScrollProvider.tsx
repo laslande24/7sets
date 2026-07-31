@@ -4,6 +4,7 @@ import Lenis from "lenis";
 import { useEffect, type ReactNode } from "react";
 
 import { gsap, prefersReducedMotion, ScrollTrigger } from "@/lib/gsap";
+import { registerScroller } from "@/lib/scroll";
 
 /**
  * Smooth scroll, and the one place ScrollTrigger is told when to refresh.
@@ -34,6 +35,9 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
     });
 
     lenis.on("scroll", ScrollTrigger.update);
+    // Anything that scrolls the window itself goes through this instance while
+    // it exists — see lib/scroll.ts.
+    registerScroller(lenis);
 
     // GSAP's ticker is a requestAnimationFrame loop, and rAF does not run in a
     // page the browser is not painting — a background tab, a hidden pane, a
@@ -98,6 +102,7 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
       window.removeEventListener("resize", onResize);
       document.removeEventListener("click", onClick);
       gsap.ticker.remove(tick);
+      registerScroller(null);
       lenis.destroy();
     };
   }, []);
