@@ -20,9 +20,15 @@ import { cn } from "@/lib/cn";
  * motion on the browser's native jump takes over. Only the counter beside the
  * marker is hidden from assistive tech — "30" is meaningless read aloud.
  *
- * State changes at most 35 times across the whole page (seven sets × five
- * scores) and is guarded against no-op sets, so this does not re-render on
- * scroll.
+ * The set name and counter show while the page is scrolling, then fade out
+ * about a second after it stops, like a native scroll indicator. Most sections
+ * run to the right edge of the window (the programme and coach rails bleed
+ * past it), so a label that stayed lit sat on top of the content at every
+ * width. The markers stay; hovering or focusing the rail brings the label back.
+ *
+ * The score changes at most 35 times across the whole page (seven sets × five
+ * scores) and is guarded against no-op sets; `awake` flips once per scroll
+ * burst. Neither re-renders per frame.
  */
 
 /** Derived from the `as const` union so the ids stay literal and typo-proof. */
@@ -43,6 +49,8 @@ export function ScoreRail() {
     score: SCORES[0],
   });
   const lastRef = useRef("");
+  const [awake, setAwake] = useState(false);
+  const sleepRef = useRef(0);
 
   useGSAP(
     () => {
@@ -51,6 +59,12 @@ export function ScoreRail() {
         if (key === lastRef.current) return;
         lastRef.current = key;
         setActive({ set, score });
+      };
+
+      const wake = () => {
+        setAwake(true);
+        window.clearTimeout(sleepRef.current);
+        sleepRef.current = window.setTimeout(() => setAwake(false), 1200);
       };
 
       // One trigger per set, measured against the middle of the viewport: the
@@ -68,12 +82,17 @@ export function ScoreRail() {
           start: "top 50%",
           end: "bottom 50%",
           onUpdate: (self) => {
-            if (self.isActive) publish(section.set, scoreFor(self.progress));
+            if (!self.isActive) return;
+            publish(section.set, scoreFor(self.progress));
+            wake();
           },
         });
       });
 
-      return () => triggers.forEach((trigger) => trigger.kill());
+      return () => {
+        triggers.forEach((trigger) => trigger.kill());
+        window.clearTimeout(sleepRef.current);
+      };
     },
     { scope },
   );
@@ -82,7 +101,7 @@ export function ScoreRail() {
     <nav
       ref={scope}
       aria-label="Sets"
-      className="fixed top-1/2 right-plate z-40 hidden -translate-y-1/2 lg:block"
+      className="group/rail fixed top-1/2 right-plate z-40 hidden -translate-y-1/2 lg:block"
     >
       <ol className="flex flex-col items-end gap-2">
         {setSections.map((section) => {
@@ -102,7 +121,12 @@ export function ScoreRail() {
                   className={cn(
                     "text-caption tracking-wider uppercase transition-opacity duration-(--dur-base)",
                     isActive
-                      ? "text-lime-600 opacity-100"
+                      ? cn(
+                          "text-lime-600",
+                          awake
+                            ? "opacity-100"
+                            : "opacity-0 group-hover/rail:opacity-100 group-focus-within/rail:opacity-100",
+                        )
                       : "text-ink/50 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100",
                   )}
                 >
